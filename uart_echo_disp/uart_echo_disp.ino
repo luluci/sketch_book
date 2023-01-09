@@ -45,7 +45,7 @@ void loop() {
 
     // 受信データをアニメーション表示
     M5.dis.setWidthHeight(led_ascii_buff_char_length, led_ascii_buff_height);
-    M5.dis.animation(led_ascii_buff, 200, LED_DisPlay::kMoveLeft, led_ascii_buff_count);
+    M5.dis.animation(led_ascii_buff, 200, LED_DisPlay::kMoveLeft, led_ascii_buff_count-4);
 
     delay(500);
 

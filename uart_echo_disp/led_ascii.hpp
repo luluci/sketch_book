@@ -55,7 +55,7 @@ static constexpr uint8_t led_ptn_raw_undef[matrix_byte_size+2] = {
 // 5x5パターン定義：記号
 static constexpr uint8_t led_ptn_raw_x21[matrix_byte_size+2] = {
     // size
-	3,5,
+	1,5,
     // '!'
     BLU,OFF,OFF,OFF,OFF,
     BLU,OFF,OFF,OFF,OFF,
@@ -135,7 +135,7 @@ static constexpr uint8_t led_ptn_raw_x3B[matrix_byte_size+2] = {
 };
 static constexpr uint8_t led_ptn_raw_x3F[matrix_byte_size+2] = {
     // size
-    5,1,
+    3,5,
     // '?'
     OFF,BLU,OFF,OFF,OFF,
     BLU,OFF,BLU,OFF,OFF,
