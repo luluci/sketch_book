@@ -1,5 +1,6 @@
 #include "main.hpp"
 
+#include "ir.hpp"
 #include "serial.hpp"
 
 void setup(void) {
@@ -9,7 +10,10 @@ void setup(void) {
     // cfg.output_power = true;
     M5_BEGIN(cfg);
 
-    //
+    // IR初期化
+    ir_init();
+
+    // LCD初期表示
     M5.Display.setTextSize(1);
     M5.Display.startWrite();
     M5.Display.println("Wait UART...");
