@@ -23,7 +23,9 @@
         "vector": "cpp",
         "string_view": "cpp",
         "initializer_list": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "lv_os.h": "c",
+        "portmacro.h": "c"
     },
     "cSpell.words": [
         "coreink",
