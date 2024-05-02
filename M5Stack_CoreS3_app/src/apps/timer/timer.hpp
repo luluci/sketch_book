@@ -11,6 +11,8 @@ namespace app
 
 		lv_obj_t *parent_;
 		lv_style_t style_select_;
+		lv_style_t style_cover_;
+		lv_obj_ptr_t obj_cover_;
 		// lv_obj_ptr_t obj_hr_;
 		lv_obj_ptr_t obj_min_;
 		lv_obj_ptr_t obj_sec_;
@@ -46,6 +48,8 @@ namespace app
 
 	private:
 		void reset_timer();
+
+		static void event_cb(lv_event_t *);
 	};
 
 }

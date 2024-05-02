@@ -4,6 +4,11 @@
 
 #include "m5gfx_lvgl.hpp"
 #include "apps/timer/timer.hpp"
+#include "apps/config.hpp"
+#include "apps/utility.hpp"
+
+app::lv_obj_ptr_t header_;
+app::lv_obj_ptr_t body_;
 
 app::timer timer;
 
@@ -49,6 +54,7 @@ void app_init()
 	lv_style_set_border_width(&rootStyle, 0);
 	lv_style_set_outline_width(&rootStyle, 0);
 	lv_style_set_pad_all(&rootStyle, 0);
+	lv_style_set_bg_color(&rootStyle, lv_color_hex3(0xf88));
 
 	// lv_obj_t *label = lv_label_create(lv_screen_active());
 	// lv_label_set_text(label, "Hello world");
@@ -57,7 +63,19 @@ void app_init()
 
 	lv_obj_add_event_cb(scr, my_event_cb, LV_EVENT_RELEASED, nullptr);
 
-	timer.init(lv_screen_active());
+	// screenをheader/bodyで分割
+	header_ = app::make_lv_obj_ptr(lv_obj_create, scr);
+	body_ = app::make_lv_obj_ptr(lv_obj_create, scr);
+	//
+	lv_obj_add_style(header_.get(), &rootStyle, LV_PART_MAIN);
+	lv_obj_set_align(header_.get(), LV_ALIGN_TOP_MID);
+	lv_obj_set_align(body_.get(), LV_ALIGN_TOP_MID);
+	lv_obj_set_y(header_.get(), SCR_HEADER_Y);
+	lv_obj_set_y(body_.get(), SCR_BODY_Y);
+	lv_obj_set_size(header_.get(), LCD_WIDTH, SCR_HEADER_HEIGHT);
+	lv_obj_set_size(body_.get(), LCD_WIDTH, SCR_BODY_HEIGHT);
+
+	timer.init(body_.get());
 
 	//
 	lv_timer_create(lvgl_100ms_timer, 100, nullptr);

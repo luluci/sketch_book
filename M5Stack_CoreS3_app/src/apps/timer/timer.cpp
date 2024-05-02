@@ -1,5 +1,6 @@
 #include "timer.hpp"
 #include "../utility.hpp"
+#include "../fonts/fonts.hpp"
 
 #include <lvgl.h>
 
@@ -15,10 +16,15 @@ namespace app
 
         // style
         lv_style_init(&style_select_);
+        // lv_style_set_text_font(&style_select_, &hackgen_console_60);
         lv_style_set_text_font(&style_select_, &lv_font_montserrat_48);
         // lv_style_set_bg_color(&style_select_, lv_color_hex3(0xf88));
         // lv_style_set_border_width(&style_select_, 2);
         // lv_style_set_border_color(&style_select_, lv_color_hex3(0xf00));
+        lv_style_init(&style_cover_);
+        lv_style_set_bg_opa(&style_cover_, LV_OPA_TRANSP);
+        lv_style_set_border_width(&style_cover_, 0);
+        lv_style_set_width(&style_cover_, LV_PCT(100));
 
         // make roller object
         obj_min_ = make_lv_obj_ptr(lv_roller_create, parent_);
@@ -36,6 +42,12 @@ namespace app
         {
             return false;
         }
+        obj_cover_ = make_lv_obj_ptr(lv_obj_create, parent_);
+        if (!obj_cover_)
+        {
+            return false;
+        }
+
         // set roller option
         lv_roller_set_options(obj_min_.get(), opt_60_, LV_ROLLER_MODE_INFINITE);
         lv_roller_set_options(obj_sec_.get(), opt_60_, LV_ROLLER_MODE_INFINITE);
@@ -64,7 +76,13 @@ namespace app
         lv_roller_set_selected(obj_sec_.get(), count_sec_, LV_ANIM_OFF);
         lv_roller_set_selected(obj_msec_.get(), count_msec_, LV_ANIM_OFF);
 
-        return false;
+        // rollerのGUIに蓋をして無効化する
+        lv_obj_set_align(obj_cover_.get(), LV_ALIGN_CENTER);
+        // lv_obj_set_size(obj_cover_.get(), 250, obj_height_);
+        lv_obj_add_style(obj_cover_.get(), &style_cover_, LV_PART_MAIN);
+        lv_obj_add_event_cb(obj_cover_.get(), event_cb, LV_EVENT_RELEASED, this);
+
+        return true;
     }
     void timer::begin()
     {
@@ -105,5 +123,11 @@ namespace app
         lv_roller_set_selected(obj_min_.get(), count_min_, LV_ANIM_OFF);
         lv_roller_set_selected(obj_sec_.get(), count_sec_, LV_ANIM_OFF);
         lv_roller_set_selected(obj_msec_.get(), count_msec_, LV_ANIM_OFF);
+    }
+
+    void timer::event_cb(lv_event_t *event)
+    {
+        auto *self = (timer *)event->user_data;
+        self->begin();
     }
 }
