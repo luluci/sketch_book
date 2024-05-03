@@ -16,9 +16,10 @@ namespace app
 		lv_obj_ptr_t obj_min_;
 		lv_obj_ptr_t obj_sec_;
 		lv_obj_ptr_t obj_msec_;
-		static constexpr size_t obj_width_ = 80;
-		static constexpr size_t obj_height_ = 120;
-		static constexpr size_t obj_height_msec_ = 80;
+		static constexpr size_t obj_width_ = 100;
+		static constexpr size_t obj_width_msec_ = 80;
+		static constexpr size_t obj_height_ = 160;
+		static constexpr size_t obj_height_msec_ = 100;
 		static constexpr size_t obj_margin_ = 10;
 		size_t count_min_;
 		size_t count_sec_;

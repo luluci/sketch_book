@@ -101,6 +101,7 @@ void app_init()
 	lv_style_set_height(&app::style_base_black, LV_VER_RES);
 	lv_style_set_border_width(&app::style_base_black, 0);
 	lv_style_set_outline_width(&app::style_base_black, 0);
+	lv_style_set_pad_all(&app::style_base_black, 0);
 	lv_style_set_bg_color(&app::style_base_black, lv_color_hex3(0x000));
 	// 背景透過
 	lv_style_init(&app::style_base_transp);
@@ -108,6 +109,7 @@ void app_init()
 	lv_style_set_height(&app::style_base_transp, LV_VER_RES);
 	lv_style_set_border_width(&app::style_base_transp, 0);
 	lv_style_set_outline_width(&app::style_base_transp, 0);
+	lv_style_set_pad_all(&app::style_base_transp, 0);
 	lv_style_set_bg_opa(&app::style_base_transp, LV_OPA_TRANSP);
 
 	// lv_obj_t *label = lv_label_create(lv_screen_active());

@@ -51,7 +51,8 @@ namespace app
         // style
         lv_style_init(&style_select_);
         // lv_style_set_text_font(&style_select_, &hackgen_console_60);
-        lv_style_set_text_font(&style_select_, &lv_font_montserrat_48);
+        // lv_style_set_text_font(&style_select_, &lv_font_montserrat_48);
+        lv_style_set_text_font(&style_select_, &deja_vu_sans_70);
         // lv_style_set_bg_color(&style_select_, lv_color_hex3(0xf88));
         // lv_style_set_border_width(&style_select_, 2);
         // lv_style_set_border_color(&style_select_, lv_color_hex3(0xf00));
@@ -78,10 +79,10 @@ namespace app
         // lv_obj_set_style_bg_grad_dir(roller, LV_GRAD_DIR_VER, 0);
         lv_obj_set_size(obj_min_.get(), obj_width_, obj_height_);
         lv_obj_set_size(obj_sec_.get(), obj_width_, obj_height_);
-        lv_obj_set_size(obj_msec_.get(), obj_width_, obj_height_msec_);
-        lv_obj_align(obj_min_.get(), LV_ALIGN_CENTER, -obj_width_ - obj_margin_, 0);
-        lv_obj_align(obj_sec_.get(), LV_ALIGN_CENTER, 0, 0);
-        lv_obj_align(obj_msec_.get(), LV_ALIGN_CENTER, obj_width_ + obj_margin_, (obj_height_ - obj_height_msec_) / 2);
+        lv_obj_set_size(obj_msec_.get(), obj_width_msec_, obj_height_msec_);
+        lv_obj_align(obj_min_.get(), LV_ALIGN_LEFT_MID, obj_margin_, 0);
+        lv_obj_align(obj_sec_.get(), LV_ALIGN_LEFT_MID, obj_margin_ + obj_width_ + obj_margin_, 0);
+        lv_obj_align(obj_msec_.get(), LV_ALIGN_LEFT_MID, (obj_margin_ + obj_width_) * 2 + obj_margin_, (obj_height_ - obj_height_msec_) / 2);
 
         // lv_obj_add_event_cb(roller, event_handler, LV_EVENT_ALL, NULL);
         lv_roller_set_selected(obj_min_.get(), count_min_, LV_ANIM_OFF);

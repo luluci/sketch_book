@@ -2,4 +2,5 @@
 
 #include <lvgl.h>
 
-LV_FONT_DECLARE(hackgen_console_60)
+LV_FONT_DECLARE(deja_vu_sans_70)
+LV_FONT_DECLARE(test_font)

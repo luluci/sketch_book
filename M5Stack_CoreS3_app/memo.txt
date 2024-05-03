@@ -1,0 +1,18 @@
+
+■LVGL
+・lv_freertos.c
+ESP32プラットフォームへの対応にバグあり
+ESP32ではtaskENTER_CRITICAL(&mtx)が引数を取るが、その他環境では引数無し。
+ESP32向けの対応を追加する。
+「portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;」
+　→v9.1.0で解消
+
+■font
+https://lvgl.io/tools/fontconverter
+
+ファイルを追加するとリビルドが走るので動作確認用のテストフォントファイル(test_font.c)を常時入れておく。
+まずは同じ名前(test_font)で生成して表示を確認する。
+
+・bpp：			1bit-per-pixel
+・生成range：	0x20-0x7F
+
