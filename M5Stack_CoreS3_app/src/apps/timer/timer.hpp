@@ -1,15 +1,14 @@
 #pragma once
 
 #include <lvgl.h>
+#include "../base.hpp"
 #include "../utility.hpp"
 
 namespace app
 {
 
-	class timer
+	class timer : public base
 	{
-
-		lv_obj_t *parent_;
 		lv_style_t style_select_;
 		lv_style_t style_cover_;
 		lv_obj_ptr_t obj_cover_;
