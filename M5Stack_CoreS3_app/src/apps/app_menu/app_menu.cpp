@@ -38,6 +38,19 @@ namespace app
 		lv_obj_add_event_cb(btn, event_item_timer_cb, LV_EVENT_CLICKED, this);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
 		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		lv_list_add_text(obj_list_.get(), "Debug");
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
+		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
 
 		// 画面タッチイベント
 		lv_obj_add_event_cb(obj_base_.get(), event_cb, LV_EVENT_RELEASED, this);
