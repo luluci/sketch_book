@@ -11,21 +11,40 @@ namespace app
 	{
 		lv_style_t style_select_;
 		lv_style_t style_cover_;
+		lv_style_t style_btn_off_;
 		lv_obj_ptr_t obj_cover_;
 		// lv_obj_ptr_t obj_hr_;
 		lv_obj_ptr_t obj_min_;
 		lv_obj_ptr_t obj_sec_;
 		lv_obj_ptr_t obj_msec_;
+		lv_obj_ptr_t obj_btn_buzzer_;
+		lv_obj_ptr_t obj_btn_buzzer_lbl_;
+		size_t count_min_;
+		size_t count_sec_;
+		size_t count_msec_;
+		lv_state_t state_check_buzzer_;
+		//
+		bool is_count_;
+		// GUIサイズ設定
 		static constexpr size_t obj_width_ = 100;
 		static constexpr size_t obj_width_msec_ = 80;
 		static constexpr size_t obj_height_ = 160;
 		static constexpr size_t obj_height_msec_ = 100;
 		static constexpr size_t obj_margin_ = 10;
-		size_t count_min_;
-		size_t count_sec_;
-		size_t count_msec_;
-		//
-		bool is_count_;
+		static constexpr size_t obj_btn_width_ = 100;
+		static constexpr size_t obj_btn_height_ = 40;
+		// 配置位置計算
+		// タイマーは左下基準にする
+		static constexpr size_t pos_min_offset_x_ = obj_margin_;
+		static constexpr size_t pos_min_offset_y_ = -obj_margin_;
+		static constexpr size_t pos_sec_offset_x_ = pos_min_offset_x_ + obj_width_ + obj_margin_;
+		static constexpr size_t pos_sec_offset_y_ = -obj_margin_;
+		static constexpr size_t pos_msec_offset_x_ = pos_sec_offset_x_ + obj_width_ + obj_margin_;
+		static constexpr size_t pos_msec_offset_y_ = -obj_margin_;
+		static constexpr size_t pos_cover_offset_x_ = 0;
+		static constexpr size_t pos_cover_offset_y_ = -obj_margin_;
+		static constexpr size_t pos_btn_buzzer_offset_x_ = obj_margin_;
+		static constexpr size_t pos_btn_buzzer_offset_y_ = obj_margin_;
 
 		// roller option
 		// min, sec
@@ -50,6 +69,7 @@ namespace app
 		void reset_timer();
 
 		static void event_cb(lv_event_t *);
+		static void event_btn_buzzer_cb(lv_event_t *);
 	};
 
 }
