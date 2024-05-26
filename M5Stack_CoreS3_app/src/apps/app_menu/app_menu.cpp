@@ -32,12 +32,18 @@ namespace app
 		// list設定
 		lv_obj_align(obj_list_.get(), LV_ALIGN_LEFT_MID, 0, 0);
 		lv_obj_set_size(obj_list_.get(), list_width, LCD_HEIGHT);
+		//
+		timer_.init(this, item::timer);
+		i2c_dump_.init(this, item::i2c_dump);
 		// list項目
 		lv_obj_t *btn;
 		btn = lv_list_add_button(obj_list_.get(), LV_SYMBOL_BELL, "Timer");
-		lv_obj_add_event_cb(btn, event_item_timer_cb, LV_EVENT_CLICKED, this);
-		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		timer_.set_cb(btn, LV_EVENT_CLICKED);
+		// lv_obj_add_event_cb(btn, event_item_timer_cb, LV_EVENT_CLICKED, this);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "I2C dump");
+		i2c_dump_.set_cb(btn, LV_EVENT_CLICKED);
+		// lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		//
 		lv_list_add_text(obj_list_.get(), "Debug");
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
 		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
@@ -77,13 +83,28 @@ namespace app
 	}
 	void app_menu::event_item_cb_impl(lv_event_t *event, item value)
 	{
-		auto *self = reinterpret_cast<app_menu *>(event->user_data);
+		auto *self = reinterpret_cast<app_menu_item *>(event->user_data);
 
 		if (value != item::MAX)
 		{
-			self->state_ = value;
+			self->menu_ptr_->state_ = value;
 		}
 
-		lv_obj_send_event(self->parent_, (lv_event_code_t)APP_EVENT_MENU_SELECTED, nullptr);
+		lv_obj_send_event(self->menu_ptr_->parent_, (lv_event_code_t)APP_EVENT_MENU_SELECTED, nullptr);
+	}
+
+	void app_menu_item::init(app_menu *ptr, app::item itm)
+	{
+		menu_ptr_ = ptr;
+		item_ = itm;
+	}
+	void app_menu_item::set_cb(lv_obj_t *obj, lv_event_code_t filter)
+	{
+		lv_obj_add_event_cb(obj, event_cb, filter, this);
+	}
+	void app_menu_item::event_cb(lv_event_t *event)
+	{
+		auto *self = reinterpret_cast<app_menu_item *>(event->user_data);
+		self->menu_ptr_->event_item_cb_impl(event, self->item_);
 	}
 }

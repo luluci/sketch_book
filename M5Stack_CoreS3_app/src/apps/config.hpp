@@ -17,6 +17,7 @@ namespace app
 	enum class item : size_t
 	{
 		timer,
+		i2c_dump,
 
 		MAX
 	};

@@ -5,13 +5,24 @@
 #include "m5gfx_lvgl.hpp"
 #include "apps/timer/timer.hpp"
 #include "apps/app_menu/app_menu.hpp"
+#include "apps/base.hpp"
 #include "apps/config.hpp"
 #include "apps/utility.hpp"
+#include "apps/i2c/i2c_dump.hpp"
+#include <i2c/i2c_slave.hpp>
+
+extern "C"
+{
+#include "i2c/protocol.h"
+}
 
 app::lv_obj_ptr_t header_;
 app::lv_obj_ptr_t body_;
 
 app::timer timer;
+app::i2c_dump i2c_dump;
+app::base *disp_app_ptr = nullptr;
+
 app::app_menu app_menu;
 
 static void
@@ -23,17 +34,31 @@ my_event_cb(lv_event_t *event)
 static void lvgl_100ms_timer(lv_timer_t *tim)
 {
 	timer.count();
+	i2c_dump.update();
 }
 
 void disp_app()
 {
+	if (disp_app_ptr != nullptr)
+	{
+		disp_app_ptr->hide();
+	}
+
 	switch (app_menu.status())
 	{
 	case app::item::timer:
-		timer.show();
+		disp_app_ptr = &timer;
+		break;
+	case app::item::i2c_dump:
+		disp_app_ptr = &i2c_dump;
 		break;
 	default:
 		break;
+	}
+
+	if (disp_app_ptr != nullptr)
+	{
+		disp_app_ptr->show();
 	}
 }
 
@@ -145,6 +170,11 @@ void app_init()
 
 	//
 	disp_app();
+
+	//
+	i2c_slave_protocol1_init();
+	auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, i2c_slave_isr_handler_1, nullptr);
+	i2c_dump.init(scr, i2c_result);
 }
 
 void app_dispose()

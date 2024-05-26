@@ -134,6 +134,10 @@ namespace app
 	}
 	void timer::count()
 	{
+		if (!is_visible_)
+		{
+			return;
+		}
 		if (!is_count_)
 		{
 			return;
