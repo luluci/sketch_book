@@ -17,7 +17,7 @@ extern "C"
 namespace app
 {
 
-	i2c_dump::i2c_dump() : obj_event_dump_caption_(), obj_event_dump_()
+	i2c_dump::i2c_dump() : obj_event_dump_caption_(), obj_event_dump_(), count_(0)
 	{
 	}
 	bool i2c_dump::init(lv_obj_t *parent, bool i2c_state)
@@ -82,6 +82,9 @@ namespace app
 		lv_obj_set_size(obj_event_dump_.get(), obj_w_event_dump_, obj_h_event_dump_);
 		lv_obj_add_style(obj_event_dump_.get(), &style_dump_, LV_PART_MAIN);
 
+		// event
+		lv_obj_add_event_cb(obj_base_.get(), event_cb, LV_EVENT_RELEASED, this);
+
 		return true;
 	}
 	void i2c_dump::begin()
@@ -90,7 +93,18 @@ namespace app
 
 	void i2c_dump::update()
 	{
-		if (i2c_protocol1_event.has_update == 1)
+		bool force_update = false;
+		count_++;
+		if (count_ > 50)
+		{
+			count_ = 0;
+			if (dbg_data.seq_dump_pos > 0)
+			{
+				force_update = true;
+			}
+		}
+
+		if (i2c_protocol1_event.has_update == 1 || force_update)
 		{
 			// clear
 			i2c_protocol1_event.has_update = 0;
@@ -98,8 +112,10 @@ namespace app
 			auto data = dbg_data;
 			dbg_data.seq_dump_pos = 0;
 			//
-			int event_dump_pos_ = 0;
 			int len;
+			int event_dump_pos_ = 0;
+			len = snprintf(&event_dump_[event_dump_pos_], event_dump_size_ - event_dump_pos_, "[ev cnt:%d]", data.seq_dump_pos);
+			event_dump_pos_ += len;
 			for (size_t i = 0; i < data.seq_dump_pos; i++)
 			{
 				len = snprintf(&event_dump_[event_dump_pos_], event_dump_size_ - event_dump_pos_, "> %d ", data.seq_dump[i]);
@@ -112,7 +128,9 @@ namespace app
 	void i2c_dump::event_cb(lv_event_t *event)
 	{
 		auto *self = reinterpret_cast<i2c_dump *>(event->user_data);
-		self->begin();
+		// self->begin();
+		snprintf(self->event_dump_, self->event_dump_size_, "<clear>");
+		lv_label_set_text_static(self->obj_event_dump_.get(), self->event_dump_);
 	}
 
 }

@@ -31,21 +31,18 @@ namespace app
 
 		//
 		friend class app_menu_item;
+		app_menu_item dummy_;
 		app_menu_item timer_;
 		app_menu_item i2c_dump_;
 
 	public:
 		app_menu();
 
-		bool init(lv_obj_t *parent);
+		bool init(lv_obj_t *parent, item init_item);
 		item status()
 		{
 			return state_;
 		}
-
-		static void event_cb(lv_event_t *);
-		static void event_item_timer_cb(lv_event_t *);
-		static void event_item_none_cb(lv_event_t *);
 
 	private:
 		static void event_item_cb_impl(lv_event_t *, item);

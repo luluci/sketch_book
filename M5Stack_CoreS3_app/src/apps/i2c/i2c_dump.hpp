@@ -16,6 +16,8 @@ namespace app
 		lv_style_t style_caption_;
 		lv_style_t style_dump_;
 
+		size_t count_;
+
 		// GUIサイズ設定
 		static constexpr size_t obj_margin_ = 5;
 		static constexpr size_t obj_h_event_dump_caption_ = 20;

@@ -75,6 +75,7 @@ extern size_t i2c_protocol1_result_ringbuf_ref_pos;      // 外部モジュー�
 // debug
 enum dbg_dump_seq_id
 {
+    DBG_DUMP_SEQ_INT_START,
     DBG_DUMP_SEQ_RXFIFO_FULL,
     DBG_DUMP_SEQ_STOP_INT_HAS_RXFIFO,
     DBG_DUMP_SEQ_STOP_INT_W,

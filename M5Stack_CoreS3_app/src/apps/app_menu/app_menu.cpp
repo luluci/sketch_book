@@ -9,9 +9,10 @@ namespace app
 	{
 	}
 
-	bool app_menu::init(lv_obj_t *parent)
+	bool app_menu::init(lv_obj_t *parent, item init_item)
 	{
 		parent_ = parent;
+		state_ = init_item;
 
 		// 必要なリソースを最初に確保できるかチェックする
 		// baseになるobjを作成してその上にGUI部品を配置する
@@ -33,54 +34,37 @@ namespace app
 		lv_obj_align(obj_list_.get(), LV_ALIGN_LEFT_MID, 0, 0);
 		lv_obj_set_size(obj_list_.get(), list_width, LCD_HEIGHT);
 		//
+		dummy_.init(this, item::MAX);
 		timer_.init(this, item::timer);
 		i2c_dump_.init(this, item::i2c_dump);
-		// list項目
 		lv_obj_t *btn;
+		// list項目
+		lv_list_add_text(obj_list_.get(), "Apps");
 		btn = lv_list_add_button(obj_list_.get(), LV_SYMBOL_BELL, "Timer");
 		timer_.set_cb(btn, LV_EVENT_CLICKED);
-		// lv_obj_add_event_cb(btn, event_item_timer_cb, LV_EVENT_CLICKED, this);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "I2C dump");
 		i2c_dump_.set_cb(btn, LV_EVENT_CLICKED);
-		// lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
 		//
 		lv_list_add_text(obj_list_.get(), "Debug");
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");
-		lv_obj_add_event_cb(btn, event_item_none_cb, LV_EVENT_CLICKED, this);
+		dummy_.set_cb(btn, LV_EVENT_CLICKED);
 
 		// 画面タッチイベント
-		lv_obj_add_event_cb(obj_base_.get(), event_cb, LV_EVENT_RELEASED, this);
+		dummy_.set_cb(obj_base_.get(), LV_EVENT_RELEASED);
 
 		return true;
 	}
 
-	void app_menu::event_cb(lv_event_t *event)
-	{
-		event_item_cb_impl(event, item::MAX);
-	}
-	void app_menu::event_item_timer_cb(lv_event_t *event)
-	{
-		// auto *self = reinterpret_cast<app_menu *>(event->user_data);
-		// self->state_ = item::timer;
-		// lv_obj_send_event(self->parent_, (lv_event_code_t)APP_EVENT_MENU_SELECTED, nullptr);
-		// lv_event_send(self->parent_, APP_EVENT_MENU_SELECTED, nullptr);
-		// self->begin();
-		event_item_cb_impl(event, item::timer);
-	}
-	void app_menu::event_item_none_cb(lv_event_t *event)
-	{
-		event_item_cb_impl(event, item::MAX);
-	}
 	void app_menu::event_item_cb_impl(lv_event_t *event, item value)
 	{
 		auto *self = reinterpret_cast<app_menu_item *>(event->user_data);

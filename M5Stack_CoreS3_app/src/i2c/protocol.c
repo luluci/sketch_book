@@ -13,6 +13,7 @@ i2c_protocol1_read_interface *latest_reg_data; // regに対応するデータ
 
 // slave data
 i2c_protocol1_read_interface data_02h;
+uint8_t dummy_data[2] = {0, 0};
 
 i2c_protocol1_result_t i2c_protocol1_result_ringbuf[i2c_protocol1_result_ringbuf_size];
 size_t i2c_protocol1_result_ringbuf_pos;
@@ -31,7 +32,7 @@ enum protocol_state
 
 // 受信データ解析
 void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c);
-
+void i2c_slave_protocol1_set_tx_fifo(i2c_setting_t *i2c);
 //
 void i2c_slave_protocol1_check_data1(void);
 
@@ -77,6 +78,9 @@ void i2c_slave_protocol1_init(void)
 	//
 	i2c_protocol1_result_ringbuf_ref_pos = 0;
 
+	//
+	data_02h.value = 0x1234;
+
 	// debug
 	dbg_data.seq_dump_pos = 0;
 }
@@ -90,6 +94,8 @@ void i2c_slave_isr_handler_1(void *arg)
 	i2c_ll_clr_intsts_mask(i2c->dev, activeInt);
 	uint32_t rx_fifo_len = i2c_ll_get_rxfifo_cnt(i2c->dev);
 	bool slave_rw = i2c_ll_slave_rw(i2c->dev);
+
+	dbg_i2c_slave_protocol1_dump_seq(DBG_DUMP_SEQ_INT_START);
 
 	if (activeInt & I2C_RXFIFO_WM_INT_ENA)
 	{
@@ -199,6 +205,8 @@ void i2c_slave_isr_handler_1(void *arg)
 			// masterからREAD受信
 			// 応答をセットしてclock stretch解除する
 
+			i2c_slave_protocol1_set_tx_fifo(i2c);
+
 			// on C3 RX data dissapears with repeated start, so we need to get it here
 			// if (rx_fifo_len)
 			// {
@@ -214,6 +222,8 @@ void i2c_slave_isr_handler_1(void *arg)
 		else if (cause == I2C_STRETCH_CAUSE_TX_FIFO_EMPTY)
 		{
 			// 送信バッファempty
+
+			// i2c_slave_protocol1_set_tx_fifo(i2c);
 
 			// pxHigherPriorityTaskWoken |= i2c_slave_handle_tx_fifo_empty(i2c);
 			// i2c_ll_stretch_clr(i2c->dev);
@@ -269,20 +279,6 @@ void i2c_slave_protocol1_set_data1(uint16_t value)
 	data_02h.is_lock = 0;
 }
 
-void i2c_slave_protocol1_check_data1(void)
-{
-	// I2C割り込みからは非lock時のみデータを更新する
-	// lock時は前回データをそのまま使用する
-	if (data_02h.is_lock == 0)
-	{
-		if (data_02h.has_update == 1)
-		{
-			data_02h.value = data_02h.temp_value;
-			data_02h.has_update = 0;
-		}
-	}
-}
-
 void i2c_slave_protocol1_analyze_rcv(i2c_setting_t *i2c, uint32_t *len)
 {
 	// 受信バッファからデータ取得
@@ -327,7 +323,7 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c)
 	{
 	case 0x02:
 		i2c_slave_protocol1_check_data1();
-		i2c_ll_write_txfifo(i2c->dev, (uint8_t *)&(data_02h.value), 2);
+		// i2c_ll_write_txfifo(i2c->dev, (uint8_t *)&(data_02h.value), 2);
 
 		//
 		latest_reg = i2c_protocol1_result_ptr->buffer.kind1.reg;
@@ -337,9 +333,32 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c)
 		break;
 
 	default:
+		// dummy 必要？
+		i2c_ll_write_txfifo(i2c->dev, dummy_data, 2);
+
 		ack_state = 0;
 		i2c_protocol1_result_ptr->ack = ack_state;
 		break;
+	}
+}
+void i2c_slave_protocol1_set_tx_fifo(i2c_setting_t *i2c)
+{
+	// i2c_slave_protocol1_check_data1();
+	i2c_ll_write_txfifo(i2c->dev, (uint8_t *)&(latest_reg_data->value), 2);
+	// latest_reg_data->value += 0x0101;
+}
+
+void i2c_slave_protocol1_check_data1(void)
+{
+	// I2C割り込みからは非lock時のみデータを更新する
+	// lock時は前回データをそのまま使用する
+	if (data_02h.is_lock == 0)
+	{
+		if (data_02h.has_update == 1)
+		{
+			data_02h.value = data_02h.temp_value;
+			data_02h.has_update = 0;
+		}
 	}
 }
 

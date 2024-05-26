@@ -158,7 +158,7 @@ void app_init()
 	// lv_obj_set_size(header_.get(), LCD_WIDTH, app::SCR_HEADER_HEIGHT);
 	// lv_obj_set_size(body_.get(), LCD_WIDTH, app::SCR_BODY_HEIGHT);
 
-	app_menu.init(scr);
+	app_menu.init(scr, app::item::i2c_dump);
 	timer.init(scr);
 
 	//
@@ -169,12 +169,12 @@ void app_init()
 	lv_obj_add_event_cb(scr, menu_event, (lv_event_code_t)app::APP_EVENT_MENU_SELECTED, NULL);
 
 	//
-	disp_app();
-
-	//
 	i2c_slave_protocol1_init();
 	auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, i2c_slave_isr_handler_1, nullptr);
 	i2c_dump.init(scr, i2c_result);
+
+	//
+	disp_app();
 }
 
 void app_dispose()
