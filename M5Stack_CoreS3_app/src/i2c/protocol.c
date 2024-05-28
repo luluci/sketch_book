@@ -35,6 +35,7 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c);
 void i2c_slave_protocol1_set_tx_fifo(i2c_setting_t *i2c);
 //
 void i2c_slave_protocol1_check_data1(void);
+void i2c_slave_protocol1_set_ack(i2c_setting_t *i2c, uint8_t ack);
 
 // プロトコル管理
 void i2c_slave_protocol1_analyze_rcv(i2c_setting_t *i2c, uint32_t *len);
@@ -103,7 +104,7 @@ void i2c_slave_isr_handler_1(void *arg)
 		// 受信バッファフル?
 		// 後で消す pxHigherPriorityTaskWoken |= i2c_slave_handle_rx_fifo_full(i2c, rx_fifo_len);
 		i2c_slave_protocol1_analyze_rcv(i2c, &rx_fifo_len);
-		i2c_ll_slave_enable_rx_it(i2c->dev); // is this necessary?
+		// i2c_ll_slave_enable_rx_it(i2c->dev); // is this necessary?
 
 		dbg_i2c_slave_protocol1_dump_seq(DBG_DUMP_SEQ_RXFIFO_FULL);
 	}
@@ -127,6 +128,7 @@ void i2c_slave_isr_handler_1(void *arg)
 		if (slave_rw)
 		{
 			// READ シーケンス終了
+			i2c_ll_txfifo_rst(i2c->dev);
 
 			// READに対する応答は clock stretch 要因割り込みで処理済み
 			// 受信バッファを初期化して処理完了
@@ -224,6 +226,7 @@ void i2c_slave_isr_handler_1(void *arg)
 			// 送信バッファempty
 
 			// i2c_slave_protocol1_set_tx_fifo(i2c);
+			// i2c_ll_slave_disable_tx_it(i2c->dev);
 
 			// pxHigherPriorityTaskWoken |= i2c_slave_handle_tx_fifo_empty(i2c);
 			// i2c_ll_stretch_clr(i2c->dev);
@@ -247,7 +250,6 @@ void i2c_slave_isr_handler_1(void *arg)
 		}
 
 		// clock stretch解除
-		i2c_ll_set_ack(i2c->dev, ack_state);
 		i2c_ll_stretch_clr(i2c->dev);
 	}
 #endif
@@ -328,16 +330,17 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c)
 		//
 		latest_reg = i2c_protocol1_result_ptr->buffer.kind1.reg;
 		latest_reg_data = &data_02h;
-		ack_state = 1;
-		i2c_protocol1_result_ptr->ack = ack_state;
+		// ack更新
+		i2c_protocol1_result_ptr->ack = 1;
+		i2c_slave_protocol1_set_ack(i2c, i2c_protocol1_result_ptr->ack);
 		break;
 
 	default:
 		// dummy 必要？
 		i2c_ll_write_txfifo(i2c->dev, dummy_data, 2);
-
-		ack_state = 0;
-		i2c_protocol1_result_ptr->ack = ack_state;
+		// ack更新
+		i2c_protocol1_result_ptr->ack = 0;
+		i2c_slave_protocol1_set_ack(i2c, i2c_protocol1_result_ptr->ack);
 		break;
 	}
 }
@@ -345,7 +348,7 @@ void i2c_slave_protocol1_set_tx_fifo(i2c_setting_t *i2c)
 {
 	// i2c_slave_protocol1_check_data1();
 	i2c_ll_write_txfifo(i2c->dev, (uint8_t *)&(latest_reg_data->value), 2);
-	// latest_reg_data->value += 0x0101;
+	latest_reg_data->value += 0x0101;
 }
 
 void i2c_slave_protocol1_check_data1(void)
@@ -371,4 +374,14 @@ void dbg_i2c_slave_protocol1_dump_seq(uint8_t seq)
 
 	dbg_data.seq_dump[dbg_data.seq_dump_pos] = seq;
 	dbg_data.seq_dump_pos++;
+}
+
+void i2c_slave_protocol1_set_ack(i2c_setting_t *i2c, uint8_t ack)
+{
+	if (ack != ack_state)
+	{
+		ack_state = ack;
+		i2c_ll_set_ack(i2c->dev, ack_state);
+		i2c_ll_update(i2c->dev);
+	}
 }
