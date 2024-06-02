@@ -120,7 +120,7 @@ namespace app
 	{
 		bool force_update = false;
 		count_++;
-		if (count_ > 50)
+		if (count_ > 30)
 		{
 			count_ = 0;
 			if (dbg_data.seq_dump_pos > 0)

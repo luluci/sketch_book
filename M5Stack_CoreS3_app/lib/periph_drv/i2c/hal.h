@@ -23,6 +23,12 @@
 #include <soc/i2c_struct.h>
 #include <hal/i2c_ll.h>
 
+typedef enum
+{
+    I2C_ACK = 0,
+    I2C_NACK = 1,
+} i2c_ack_lvl;
+
 //-------------------------------------- HAL_LL (Missing Functions) ------------------------------------------------
 typedef enum
 {

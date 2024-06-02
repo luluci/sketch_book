@@ -152,6 +152,10 @@ void i2c_slave_isr_handler_1(void *arg)
 			i2c_protocol1_event.has_update = 1;
 		}
 
+		// i2c_ll_txfifo_rst(i2c->dev);
+		// STOPbitでACK設定をリセット
+		i2c_slave_protocol1_set_ack(i2c, I2C_ACK);
+
 		// 		if (i2c->rx_data_count)
 		// 		{
 		// 			// WRITE or RepeatedStart
@@ -330,8 +334,10 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c)
 		//
 		latest_reg = i2c_protocol1_result_ptr->buffer.kind1.reg;
 		latest_reg_data = &data_02h;
+		//
+		// i2c_slave_protocol1_set_tx_fifo(i2c);
 		// ack更新
-		i2c_protocol1_result_ptr->ack = 1;
+		i2c_protocol1_result_ptr->ack = I2C_ACK;
 		i2c_slave_protocol1_set_ack(i2c, i2c_protocol1_result_ptr->ack);
 		break;
 
@@ -339,7 +345,7 @@ void i2c_slave_protocol1_analyze_rcv_reg(i2c_setting_t *i2c)
 		// dummy 必要？
 		i2c_ll_write_txfifo(i2c->dev, dummy_data, 2);
 		// ack更新
-		i2c_protocol1_result_ptr->ack = 0;
+		i2c_protocol1_result_ptr->ack = I2C_NACK;
 		i2c_slave_protocol1_set_ack(i2c, i2c_protocol1_result_ptr->ack);
 		break;
 	}
