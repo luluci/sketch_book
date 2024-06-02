@@ -118,6 +118,8 @@ namespace app
 
 	void i2c_dump::update()
 	{
+		// タイムアウト監視
+		// STOPbitを受信できずに一定時間経過したらバッファリセット
 		bool force_update = false;
 		count_++;
 		if (count_ > 30)
@@ -133,6 +135,11 @@ namespace app
 		{
 			// clear
 			i2c_protocol1_event.has_update = 0;
+			if (force_update)
+			{
+				i2c_slave_protocol1_incr_buffer();
+			}
+
 			//
 			auto data = dbg_data;
 			dbg_data.seq_dump_pos = 0;
@@ -147,6 +154,64 @@ namespace app
 				event_dump_pos_ += len;
 			}
 			lv_label_set_text_static(obj_intr_dump_.get(), intr_dump_);
+
+			//
+			int txrx_dump_pos_ = 0;
+			size_t idx = i2c_protocol1_result_ringbuf_ref_pos;
+			while (i2c_protocol1_result_ringbuf[idx].has_result == 1)
+			{
+				//
+				auto dump_ref = i2c_protocol1_result_ringbuf[idx];
+				// state
+				len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, "[%d]", dump_ref.state);
+				txrx_dump_pos_ += len;
+				//
+				switch (dump_ref.kind)
+				{
+				case P1_RCV_KIND_w_reg_r_val:
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, "[W->R]");
+					txrx_dump_pos_ += len;
+					// reg
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, " %d ->", dump_ref.buffer.kind1.reg);
+					txrx_dump_pos_ += len;
+					// ACK/NACK
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, " %s", (dump_ref.ack == 0 ? "ACK" : "NACK"));
+					txrx_dump_pos_ += len;
+					// fin
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, "\n");
+					txrx_dump_pos_ += len;
+
+					break;
+
+				default:
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, "[?]");
+					txrx_dump_pos_ += len;
+					//
+					for (size_t i = 0; i < dump_ref.buff_pos; i++)
+					{
+						len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, " %d ->", dump_ref.buffer.bytes[i]);
+						txrx_dump_pos_ += len;
+					}
+					// ACK/NACK
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, " %s", (dump_ref.ack == 0 ? "ACK" : "NACK"));
+					txrx_dump_pos_ += len;
+					// fin
+					len = snprintf(&txrx_dump_[txrx_dump_pos_], txrx_dump_size_ - txrx_dump_pos_, "\n");
+					txrx_dump_pos_ += len;
+					break;
+				}
+				// fin
+				i2c_protocol1_result_ringbuf[idx].has_result = 0;
+
+				// next
+				idx++;
+				if (idx >= i2c_protocol1_result_ringbuf_size)
+				{
+					idx = 0;
+				}
+			}
+			i2c_protocol1_result_ringbuf_ref_pos = idx;
+			lv_label_set_text_static(obj_txrx_dump_.get(), txrx_dump_);
 		}
 	}
 

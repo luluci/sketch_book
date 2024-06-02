@@ -76,6 +76,7 @@ esp_err_t i2c_slave_begin(i2c_setting_t *i2c)
     i2c_ll_txfifo_rst(i2c->dev);
     i2c_ll_rxfifo_rst(i2c->dev);
     i2c_ll_slave_enable_rx_it(i2c->dev);
+    // i2c_ll_slave_enable_tx_it(i2c->dev);
     i2c_ll_set_stretch(i2c->dev, 0x3FF);
     i2c_ll_update(i2c->dev);
 

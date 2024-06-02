@@ -99,3 +99,6 @@ void i2c_slave_isr_handler_1(void *arg);
 
 void i2c_slave_protocol1_init(void);
 void i2c_slave_protocol1_set_data1(uint16_t value);
+
+//
+void i2c_slave_protocol1_incr_buffer(void);
