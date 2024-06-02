@@ -5,8 +5,13 @@
 
 #define SERIAL_P Serial
 
+namespace serial {
 size_t buff_pos;
-uint8_t buff[buff_size];
+buffer buff;
+}  // namespace serial
+
+// size_t buff_pos;
+// uint8_t buff[buff_size];
 
 // prototype
 char hex2ascii_impl(uint8_t hex);
@@ -17,18 +22,19 @@ bool check_serial() {
 
 int read_serial() {
     int recv_len;
-    buff_pos = 0;
+    serial::buff_pos = 0;
 
     while (SERIAL_P.available() > 0) {
-        recv_len = SERIAL_P.read(&buff[buff_pos], buff_size - buff_pos);
-        buff_pos += recv_len;
+        recv_len = SERIAL_P.read(&serial::buff.bytes[serial::buff_pos],
+                                 serial::buffer_size - serial::buff_pos);
+        serial::buff_pos += recv_len;
     }
 
-    return buff_pos;
+    return serial::buff_pos;
 }
 
 void write_serial() {
-    SERIAL_P.write(buff, buff_pos);
+    SERIAL_P.write(serial::buff.bytes, serial::buff_pos);
 }
 
 /// @brief HEXデータをHEX文字列に変換してbuffに格納する
