@@ -9,6 +9,7 @@
 #include "apps/config.hpp"
 #include "apps/utility.hpp"
 #include "apps/i2c/i2c_dump.hpp"
+#include "apps/ir/ir_recv_dump.hpp"
 #include <i2c/i2c_slave.hpp>
 
 extern "C"
@@ -16,11 +17,14 @@ extern "C"
 #include "i2c/protocol.h"
 }
 
+#include "ir_recv.hpp"
+
 app::lv_obj_ptr_t header_;
 app::lv_obj_ptr_t body_;
 
 app::timer timer;
 app::i2c_dump i2c_dump;
+app::ir_recv_dump ir_recv_dump;
 app::base *disp_app_ptr = nullptr;
 
 app::app_menu app_menu;
@@ -35,6 +39,7 @@ static void lvgl_100ms_timer(lv_timer_t *tim)
 {
 	timer.count();
 	i2c_dump.update();
+	ir_recv_dump.update();
 }
 
 void disp_app()
@@ -51,6 +56,9 @@ void disp_app()
 		break;
 	case app::item::i2c_dump:
 		disp_app_ptr = &i2c_dump;
+		break;
+	case app::item::ir_recv_dump:
+		disp_app_ptr = &ir_recv_dump;
 		break;
 	default:
 		break;
@@ -172,6 +180,10 @@ void app_init()
 	i2c_slave_protocol1_init();
 	auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, i2c_slave_isr_handler_1, nullptr);
 	i2c_dump.init(scr, i2c_result);
+
+	// Ir Recv
+	ir_recv_init();
+	ir_recv_dump.init(scr);
 
 	//
 	disp_app();

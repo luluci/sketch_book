@@ -34,6 +34,7 @@ namespace app
 		app_menu_item dummy_;
 		app_menu_item timer_;
 		app_menu_item i2c_dump_;
+		app_menu_item ir_recv_dump_;
 
 	public:
 		app_menu();

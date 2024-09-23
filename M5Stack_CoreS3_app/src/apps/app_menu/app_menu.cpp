@@ -37,6 +37,7 @@ namespace app
 		dummy_.init(this, item::MAX);
 		timer_.init(this, item::timer);
 		i2c_dump_.init(this, item::i2c_dump);
+		ir_recv_dump_.init(this, item::ir_recv_dump);
 		lv_obj_t *btn;
 		// list項目
 		lv_list_add_text(obj_list_.get(), "Apps");
@@ -44,6 +45,8 @@ namespace app
 		timer_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "I2C dump");
 		i2c_dump_.set_cb(btn, LV_EVENT_CLICKED);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "IR Recv dump");
+		ir_recv_dump_.set_cb(btn, LV_EVENT_CLICKED);
 		//
 		lv_list_add_text(obj_list_.get(), "Debug");
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "none");

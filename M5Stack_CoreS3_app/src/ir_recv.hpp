@@ -16,7 +16,7 @@ extern IRrecv ir_recv;
 extern decode_results ir_recv_results;
 
 constexpr size_t ir_recv_buff_size = 256;
-constexpr size_t ir_recv_pool_size = 256;
+constexpr size_t ir_recv_pool_size = 10;
 
 // struct ir_recv_info_t
 // {
