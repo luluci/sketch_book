@@ -25,7 +25,7 @@ constexpr size_t ir_recv_pool_size = 10;
 
 extern String ir_recv_pool[ir_recv_pool_size];
 extern size_t ir_recv_pool_pos;
-extern size_t ir_recv_pool_begin;
+extern size_t ir_recv_pool_head;
 
 void ir_recv_init();
 bool ir_recv_check();

@@ -117,22 +117,33 @@ namespace app
         }
 
         //
-        size_t idx = ir_recv_pool_pos;
-        if (idx == 0)
-        {
-            idx = ir_recv_pool_size - 1;
-        }
-        else
-        {
-            idx--;
-        }
-        auto &tgt = ir_recv_pool[idx];
-
-        //
         int len;
         int event_dump_pos_ = 0;
-        len = snprintf(&intr_dump_[event_dump_pos_], intr_dump_size_ - event_dump_pos_, tgt.c_str());
+        while (ir_recv_pool_head != ir_recv_pool_pos && event_dump_pos_ < intr_dump_size_)
+        {
+            //
+            auto &tgt = ir_recv_pool[ir_recv_pool_head];
+            //
+            len = snprintf(&intr_dump_[event_dump_pos_], intr_dump_size_ - event_dump_pos_, tgt.c_str());
+            //
+            ir_recv_pool_head++;
+            if (ir_recv_pool_head >= ir_recv_pool_size)
+            {
+                ir_recv_pool_head = 0;
+            }
+        }
         lv_label_set_text_static(obj_intr_dump_.get(), intr_dump_);
+
+        // size_t idx = ir_recv_pool_pos;
+        // if (idx == 0)
+        // {
+        //     idx = ir_recv_pool_size - 1;
+        // }
+        // else
+        // {
+        //     idx--;
+        // }
+        // auto &tgt = ir_recv_pool[idx];
     }
 
     void ir_recv_dump::event_cb(lv_event_t *event)

@@ -6,7 +6,7 @@
 // ir_recv_info_t ir_recv_pool[ir_recv_pool_size];
 String ir_recv_pool[ir_recv_pool_size];
 size_t ir_recv_pool_pos;
-size_t ir_recv_pool_begin;
+size_t ir_recv_pool_head;
 size_t ir_recv_pool_count;
 
 IRrecv ir_recv(PIN_IR_RECV, ir_recv_buffer_size, ir_recv_timeout, true);
@@ -19,7 +19,7 @@ void ir_recv_init()
     assert(irutils::lowLevelSanityCheck() == 0);
 
     ir_recv_pool_pos = 0;
-    ir_recv_pool_begin = 0;
+    ir_recv_pool_head = 0;
     ir_recv_pool_count = 0;
 
     ir_recv.setTolerance(kTolerance); // Override the default tolerance.
@@ -33,16 +33,24 @@ bool ir_recv_check()
     if (ir_recv.decode(&ir_recv_results))
     {
 
-        ir_recv_pool[ir_recv_pool_pos] = resultToHexidecimal(&ir_recv_results);
+        // ir_recv_pool[ir_recv_pool_pos] = resultToHexidecimal(&ir_recv_results);
+        ir_recv_pool[ir_recv_pool_pos] = resultToHumanReadableBasic(&ir_recv_results);
         ir_recv_pool_pos++;
         if (ir_recv_pool_pos >= ir_recv_pool_size)
         {
             ir_recv_pool_pos = 0;
-            // ir_recv_pool_begin++;
         }
         else
         {
             ir_recv_pool_count++;
+        }
+        if (ir_recv_pool_pos == ir_recv_pool_head)
+        {
+            ir_recv_pool_head++;
+            if (ir_recv_pool_head >= ir_recv_pool_size)
+            {
+                ir_recv_pool_head = 0;
+            }
         }
 
         // RTOSのWDTクリア？
