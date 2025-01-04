@@ -9,8 +9,9 @@
 
 extern "C"
 {
-#include "i2c/protocol.h"
+	// #include "i2c/protocol.h"
 }
+#include "i2c/dbg_protocol.h"
 
 #include <lvgl.h>
 

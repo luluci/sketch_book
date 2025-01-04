@@ -1,6 +1,10 @@
 #pragma once
 
-#if 0
+extern "C"
+{
+// #include <i2c/hal.h>
+#include <i2c/hal_drv.h>
+}
 
 #include <stddef.h>
 #include <stdint.h>
@@ -70,9 +74,9 @@ typedef struct
 // リングバッファで保持する
 #define i2c_protocol1_result_ringbuf_size 5
 extern i2c_protocol1_result_t i2c_protocol1_result_ringbuf[i2c_protocol1_result_ringbuf_size];
-extern size_t i2c_protocol1_result_ringbuf_pos; // 制御上の現在参照中バッファインデックス
+extern size_t i2c_protocol1_result_ringbuf_pos;          // 制御上の現在参照中バッファインデックス
 extern i2c_protocol1_result_t *i2c_protocol1_result_ptr; // 現在参照中バッファポインタ
-extern size_t i2c_protocol1_result_ringbuf_ref_pos; // 外部モジュールからの参照用インデックス
+extern size_t i2c_protocol1_result_ringbuf_ref_pos;      // 外部モジュールからの参照用インデックス
 
 // debug
 enum dbg_dump_seq_id
@@ -97,12 +101,10 @@ typedef struct
 } dbg_data_t;
 extern dbg_data_t dbg_data;
 
-void i2c_slave_isr_handler_1(void *arg);
-
 void i2c_slave_protocol1_init(void);
 void i2c_slave_protocol1_set_data1(uint16_t value);
 
 //
 void i2c_slave_protocol1_incr_buffer(void);
 
-#endif
+extern intr_handler_t dbg_protocol_handler;

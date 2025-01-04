@@ -1,5 +1,7 @@
 #include "protocol.h"
 
+#if 0
+
 #include <i2c/hal.h>
 #include <i2c/hal_drv.h>
 
@@ -13,14 +15,14 @@ i2c_protocol1_read_interface *latest_reg_data; // regに対応するデータ
 
 // slave data
 i2c_protocol1_read_interface data_02h;
-uint8_t dummy_data[2] = {0, 0};
+static uint8_t dummy_data[2] = {0, 0};
 
 i2c_protocol1_result_t i2c_protocol1_result_ringbuf[i2c_protocol1_result_ringbuf_size];
 size_t i2c_protocol1_result_ringbuf_pos;
-i2c_protocol1_result_t *i2c_protocol1_result_ptr = NULL;
+static i2c_protocol1_result_t *i2c_protocol1_result_ptr = NULL;
 size_t i2c_protocol1_result_ringbuf_ref_pos;
 
-uint8_t ack_state = 1;
+static uint8_t ack_state = 1;
 
 // debug
 dbg_data_t dbg_data;
@@ -346,3 +348,5 @@ void dbg_i2c_slave_protocol1_dump_seq(uint8_t seq)
 	dbg_data.seq_dump[dbg_data.seq_dump_pos] = seq;
 	dbg_data.seq_dump_pos++;
 }
+
+#endif

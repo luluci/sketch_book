@@ -14,8 +14,9 @@
 
 extern "C"
 {
-#include "i2c/protocol.h"
+	// include "i2c/protocol.h"
 }
+#include "i2c/dbg_protocol.h"
 
 #include "ir_recv.hpp"
 
@@ -178,7 +179,8 @@ void app_init()
 
 	//
 	i2c_slave_protocol1_init();
-	auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, i2c_slave_isr_handler_1, nullptr);
+	auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, dbg_protocol_handler, nullptr);
+	// auto i2c_result = periph_drv::i2c_slave_driver_0.begin(GPIO_NUM_2, GPIO_NUM_1, 0x23, 40 * 1000, i2c_slave_isr_handler_1, nullptr);
 	i2c_dump.init(scr, i2c_result);
 
 	// Ir Recv

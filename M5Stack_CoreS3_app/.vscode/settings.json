@@ -25,7 +25,22 @@
         "initializer_list": "cpp",
         "utility": "cpp",
         "lv_os.h": "c",
-        "portmacro.h": "c"
+        "portmacro.h": "c",
+        "lv_event.h": "c",
+        "ratio": "cpp",
+        "hal_drv.h": "c",
+        "stddef.h": "c",
+        "stdint.h": "c",
+        "i2c_periph.h": "c",
+        "soc_caps.h": "c",
+        "i2c_caps.h": "c",
+        "*.tcc": "cpp",
+        "fstream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "cstddef": "cpp",
+        "hal.h": "c"
     },
     "cSpell.words": [
         "coreink",
