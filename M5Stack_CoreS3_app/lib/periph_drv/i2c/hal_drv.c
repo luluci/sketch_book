@@ -18,12 +18,11 @@
 
 #include "hal.h"
 
-void i2c_set_frequency(i2c_setting_t *i2c);
-bool i2c_check_line_state(i2c_setting_t *i2c);
-bool i2c_attach_gpio(i2c_setting_t *i2c);
-void i2c_set_gpio_mode(int8_t pin, gpio_mode_t mode);
-void i2c_delay_us(uint64_t us);
-
+void i2c_slave_set_frequency(i2c_setting_t *i2c);
+bool i2c_slave_check_line_state(i2c_setting_t *i2c);
+bool i2c_slave_attach_gpio(i2c_setting_t *i2c);
+void i2c_slave_set_gpio_mode(int8_t pin, gpio_mode_t mode);
+void i2c_slave_delay_us(uint64_t us);
 bool i2c_slave_detach_gpio(i2c_setting_t *i2c);
 
 esp_err_t i2c_slave_begin(i2c_setting_t *i2c)
@@ -38,10 +37,10 @@ esp_err_t i2c_slave_begin(i2c_setting_t *i2c)
     // i2c_ll_set_tout(i2c->dev, I2C_LL_MAX_TIMEOUT);
     i2c_ll_set_tout(i2c->dev, 0x1F);
     //
-    i2c_set_frequency(i2c);
+    i2c_slave_set_frequency(i2c);
     //
 
-    if (!i2c_check_line_state(i2c))
+    if (!i2c_slave_check_line_state(i2c))
     {
         // error
         // log_e("bad pin state");
@@ -49,7 +48,7 @@ esp_err_t i2c_slave_begin(i2c_setting_t *i2c)
         return ESP_FAIL;
     }
 
-    i2c_attach_gpio(i2c);
+    i2c_slave_attach_gpio(i2c);
 
     if (i2c_ll_is_bus_busy(i2c->dev))
     {
@@ -83,7 +82,7 @@ esp_err_t i2c_slave_begin(i2c_setting_t *i2c)
     return ret;
 }
 
-void i2c_set_frequency(i2c_setting_t *i2c)
+void i2c_slave_set_frequency(i2c_setting_t *i2c)
 {
     if (i2c->frequency > 1100000UL)
     {
@@ -108,7 +107,7 @@ void i2c_set_frequency(i2c_setting_t *i2c)
     i2c_ll_set_filter(i2c->dev, 3);
 }
 
-bool i2c_check_line_state(i2c_setting_t *i2c)
+bool i2c_slave_check_line_state(i2c_setting_t *i2c)
 {
     if (i2c->pin_sda < 0 || i2c->pin_scl < 0)
     {
@@ -117,8 +116,8 @@ bool i2c_check_line_state(i2c_setting_t *i2c)
     // if the bus is not 'clear' try the cycling SCL until SDA goes High or 9 cycles
     gpio_set_level(i2c->pin_sda, 1);
     gpio_set_level(i2c->pin_scl, 1);
-    i2c_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT | GPIO_MODE_DEF_OD);
-    i2c_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT | GPIO_MODE_DEF_OD);
+    i2c_slave_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT | GPIO_MODE_DEF_OD);
+    i2c_slave_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT | GPIO_MODE_DEF_OD);
     gpio_set_level(i2c->pin_scl, 1);
 
     if (!gpio_get_level(i2c->pin_sda) || !gpio_get_level(i2c->pin_scl))
@@ -126,26 +125,26 @@ bool i2c_check_line_state(i2c_setting_t *i2c)
         // log_w("invalid state sda(%d)=%d, scl(%d)=%d", sda, gpio_get_level(sda), scl, gpio_get_level(scl));
         for (uint8_t a = 0; a < 9; a++)
         {
-            i2c_delay_us(5);
+            i2c_slave_delay_us(5);
             if (gpio_get_level(i2c->pin_sda) && gpio_get_level(i2c->pin_scl))
             { // bus recovered
                 // log_w("Recovered after %d Cycles", a);
                 gpio_set_level(i2c->pin_sda, 0); // start
-                i2c_delay_us(5);
+                i2c_slave_delay_us(5);
                 for (uint8_t a = 0; a < 9; a++)
                 {
                     gpio_set_level(i2c->pin_scl, 1);
-                    i2c_delay_us(5);
+                    i2c_slave_delay_us(5);
                     gpio_set_level(i2c->pin_scl, 0);
-                    i2c_delay_us(5);
+                    i2c_slave_delay_us(5);
                 }
                 gpio_set_level(i2c->pin_scl, 1);
-                i2c_delay_us(5);
+                i2c_slave_delay_us(5);
                 gpio_set_level(i2c->pin_sda, 1); // stop
                 break;
             }
             gpio_set_level(i2c->pin_scl, 0);
-            i2c_delay_us(5);
+            i2c_slave_delay_us(5);
             gpio_set_level(i2c->pin_scl, 1);
         }
     }
@@ -158,22 +157,22 @@ bool i2c_check_line_state(i2c_setting_t *i2c)
     return true;
 }
 
-bool i2c_attach_gpio(i2c_setting_t *i2c)
+bool i2c_slave_attach_gpio(i2c_setting_t *i2c)
 {
     gpio_set_level(i2c->pin_scl, 1);
-    i2c_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT_OUTPUT_OD);
+    i2c_slave_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT_OUTPUT_OD);
     gpio_matrix_out(i2c->pin_scl, i2c->signal_scl, false, false);
     gpio_matrix_in(i2c->pin_scl, i2c->signal_scl, false);
 
     gpio_set_level(i2c->pin_sda, 1);
-    i2c_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT_OUTPUT_OD);
+    i2c_slave_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT_OUTPUT_OD);
     gpio_matrix_out(i2c->pin_sda, i2c->signal_sda, false, false);
     gpio_matrix_in(i2c->pin_sda, i2c->signal_sda, false);
 
     return true;
 }
 
-void i2c_set_gpio_mode(int8_t pin, gpio_mode_t mode)
+void i2c_slave_set_gpio_mode(int8_t pin, gpio_mode_t mode)
 {
     gpio_config_t conf = {
         .pin_bit_mask = 1LL << pin,
@@ -184,7 +183,7 @@ void i2c_set_gpio_mode(int8_t pin, gpio_mode_t mode)
     gpio_config(&conf);
 }
 
-void i2c_delay_us(uint64_t us)
+void i2c_slave_delay_us(uint64_t us)
 {
     uint64_t m = esp_timer_get_time();
     if (us)
@@ -225,15 +224,52 @@ bool i2c_slave_detach_gpio(i2c_setting_t *i2c)
     {
         gpio_matrix_out(i2c->pin_scl, 0x100, false, false);
         gpio_matrix_in(0x30, i2c->signal_scl, false);
-        i2c_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT);
+        i2c_slave_set_gpio_mode(i2c->pin_scl, GPIO_MODE_INPUT);
         i2c->pin_scl = -1; // un attached
     }
     if (i2c->pin_sda >= 0)
     {
         gpio_matrix_out(i2c->pin_sda, 0x100, false, false);
         gpio_matrix_in(0x30, i2c->signal_sda, false);
-        i2c_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT);
+        i2c_slave_set_gpio_mode(i2c->pin_sda, GPIO_MODE_INPUT);
         i2c->pin_sda = -1; // un attached
     }
     return true;
+}
+
+void i2c_write_tx_fifo(i2c_setting_t *i2c, uint8_t *buff, uint8_t len)
+{
+    // i2c_ll_txfifo_rst(i2c->dev);
+    i2c_ll_write_txfifo(i2c->dev, buff, len);
+}
+void i2c_read_rx_fifo(i2c_setting_t *i2c, uint8_t *buff, uint8_t len)
+{
+    i2c_ll_read_rxfifo(i2c->dev, buff, len);
+}
+
+void i2c_slave_get_intr_info(i2c_setting_t *i2c, i2c_intr_info_t *info)
+{
+    // 割り込み情報取得
+    // 割り込み要因を取り出してレジスタからクリア
+    info->intr_flag = i2c_ll_get_intsts_mask(i2c->dev);
+    i2c_ll_clr_intsts_mask(i2c->dev, info->intr_flag);
+    // 受信データ数取得
+    info->rx_fifo_len = i2c_ll_get_rxfifo_cnt(i2c->dev);
+    // R/Wフラグ取得
+    info->slave_rw = i2c_ll_slave_rw(i2c->dev);
+}
+
+void i2c_slave_set_ack(i2c_setting_t *i2c, uint8_t ack)
+{
+    i2c_ll_set_ack(i2c->dev, ack);
+    i2c_ll_update(i2c->dev);
+}
+void i2c_slave_clear_clock_stretch(i2c_setting_t *i2c)
+{
+    // clock stretch解除
+    i2c_ll_stretch_clr(i2c->dev);
+}
+i2c_stretch_cause_t i2c_slave_get_stretch_cause(i2c_setting_t *i2c)
+{
+    return i2c_ll_stretch_cause(i2c->dev);
 }

@@ -23,20 +23,9 @@
 #include <soc/i2c_struct.h>
 #include <hal/i2c_ll.h>
 
-typedef enum
-{
-    I2C_ACK = 0,
-    I2C_NACK = 1,
-} i2c_ack_lvl;
+#include "hal_def.h"
 
 //-------------------------------------- HAL_LL (Missing Functions) ------------------------------------------------
-typedef enum
-{
-    I2C_STRETCH_CAUSE_MASTER_READ,
-    I2C_STRETCH_CAUSE_TX_FIFO_EMPTY,
-    I2C_STRETCH_CAUSE_RX_FIFO_FULL,
-    I2C_STRETCH_CAUSE_MAX
-} i2c_stretch_cause_t;
 
 static inline i2c_stretch_cause_t i2c_ll_stretch_cause(i2c_dev_t *hw)
 {
