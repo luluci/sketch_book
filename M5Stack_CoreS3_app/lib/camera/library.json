@@ -1,0 +1,11 @@
+{
+  "name": "lib_camera",
+  "version": "1.0.0",
+  "description": "M5StackCoreS3 CameraLib",
+  "exclude": [],
+  "frameworks": "arduino",
+  "platforms": [
+    "espressif32"
+  ],
+  "dependencies": {}
+}

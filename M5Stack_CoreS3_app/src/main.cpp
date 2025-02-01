@@ -7,6 +7,7 @@
 #include "ir_recv.hpp"
 #include "app.hpp"
 #include "audio/audio.hpp"
+#include "M5CoreS3Camera.hpp"
 
 M5Canvas canvas(&M5.Lcd);
 
@@ -28,6 +29,9 @@ int32_t lcd_h;
 void setup(void)
 {
     M5_BEGIN();
+
+    // カメラ初期化
+    CoreS3Camera.begin();
 
     // speaker
     speaker.init();

@@ -38,11 +38,15 @@ namespace app
 		timer_.init(this, item::timer);
 		i2c_dump_.init(this, item::i2c_dump);
 		ir_recv_dump_.init(this, item::ir_recv_dump);
+		camera_.init(this, item::camera);
+
 		lv_obj_t *btn;
 		// list項目
 		lv_list_add_text(obj_list_.get(), "Apps");
 		btn = lv_list_add_button(obj_list_.get(), LV_SYMBOL_BELL, "Timer");
 		timer_.set_cb(btn, LV_EVENT_CLICKED);
+		btn = lv_list_add_button(obj_list_.get(), nullptr, "Camera");
+		camera_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "I2C dump");
 		i2c_dump_.set_cb(btn, LV_EVENT_CLICKED);
 		btn = lv_list_add_button(obj_list_.get(), nullptr, "IR Recv dump");

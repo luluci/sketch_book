@@ -19,6 +19,7 @@ namespace app
 		timer,
 		i2c_dump,
 		ir_recv_dump,
+		camera,
 
 		MAX
 	};

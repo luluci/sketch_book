@@ -7,6 +7,7 @@
 #include "apps/app_menu/app_menu.hpp"
 #include "apps/base.hpp"
 #include "apps/config.hpp"
+#include "apps/camera/camera.hpp"
 #include "apps/utility.hpp"
 #include "apps/i2c/i2c_dump.hpp"
 #include "apps/ir/ir_recv_dump.hpp"
@@ -22,10 +23,11 @@ extern "C"
 
 app::lv_obj_ptr_t header_;
 app::lv_obj_ptr_t body_;
-
+app::camera camera;
 app::timer timer;
 app::i2c_dump i2c_dump;
 app::ir_recv_dump ir_recv_dump;
+
 app::base *disp_app_ptr = nullptr;
 
 app::app_menu app_menu;
@@ -41,6 +43,7 @@ static void lvgl_100ms_timer(lv_timer_t *tim)
 	timer.count();
 	i2c_dump.update();
 	ir_recv_dump.update();
+	camera.on_timer(app::timer_tick_100ms{});
 }
 
 void disp_app()
@@ -60,6 +63,9 @@ void disp_app()
 		break;
 	case app::item::ir_recv_dump:
 		disp_app_ptr = &ir_recv_dump;
+		break;
+	case app::item::camera:
+		disp_app_ptr = &camera;
 		break;
 	default:
 		break;
@@ -186,6 +192,9 @@ void app_init()
 	// Ir Recv
 	ir_recv_init();
 	ir_recv_dump.init(scr);
+
+	// camera
+	camera.init(scr);
 
 	//
 	disp_app();

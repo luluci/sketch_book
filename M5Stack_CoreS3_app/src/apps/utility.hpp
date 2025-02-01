@@ -20,4 +20,10 @@ namespace app
     {
         return lv_obj_ptr_t(api(parent));
     }
+
+    // タイマ通知用定義
+    // 100ms経過通知
+    struct timer_tick_100ms
+    {
+    };
 }

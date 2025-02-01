@@ -18,15 +18,48 @@ namespace app
 
 		void show()
 		{
+			// メニューでhideイベントを取れないのでチェックしない
+			// && !is_visible_
 			if (obj_base_)
 			{
+				//
 				is_visible_ = true;
 				lv_obj_move_foreground(obj_base_.get());
+				//
+				on_show();
 			}
 		}
 		void hide()
 		{
+			// メニューでhideイベントを取れないのでチェックしない
+			// if (is_visible_)
+
+			//
 			is_visible_ = false;
+			//
+			on_hide();
+		}
+
+		virtual void on_show()
+		{
+			// no impl
+		}
+		virtual void on_hide()
+		{
+			// no impl
+		}
+
+	protected:
+		template <typename Derive>
+		static void add_on_touch(lv_obj_t *obj, Derive *derive)
+		{
+			lv_obj_add_event_cb(obj, on_touch<Derive>, LV_EVENT_RELEASED, (void *)derive);
+		}
+		template <typename Derive>
+		static void on_touch(lv_event_t *event)
+		{
+			auto *self = reinterpret_cast<Derive *>(event->user_data);
+			self->on_touch();
 		}
 	};
 }
