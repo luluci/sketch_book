@@ -49,6 +49,14 @@ namespace app
 			// no impl
 		}
 
+		virtual void on_menu_open()
+		{
+			// メニューはappに重ねて表示するので
+			// 不都合がある場合にケアするための通知をする
+			// メニューを開く直前に通知される
+			// no impl
+		}
+
 	protected:
 		template <typename Derive>
 		static void add_on_touch(lv_obj_t *obj, Derive *derive)

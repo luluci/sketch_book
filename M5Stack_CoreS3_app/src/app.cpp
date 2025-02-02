@@ -7,7 +7,7 @@
 #include "apps/app_menu/app_menu.hpp"
 #include "apps/base.hpp"
 #include "apps/config.hpp"
-#include "apps/camera/camera.hpp"
+#include "apps/camera/camera_tfl.hpp"
 #include "apps/utility.hpp"
 #include "apps/i2c/i2c_dump.hpp"
 #include "apps/ir/ir_recv_dump.hpp"
@@ -23,7 +23,7 @@ extern "C"
 
 app::lv_obj_ptr_t header_;
 app::lv_obj_ptr_t body_;
-app::camera camera;
+app::camera_tfl camera;
 app::timer timer;
 app::i2c_dump i2c_dump;
 app::ir_recv_dump ir_recv_dump;
@@ -79,6 +79,12 @@ void disp_app()
 
 void gesture_event(lv_event_t *e)
 {
+	// メニューを開くことを通知
+	if (disp_app_ptr != nullptr)
+	{
+		disp_app_ptr->on_menu_open();
+	}
+
 	// lv_obj_t *screen = lv_event_get_current_target(e);
 	lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
 	switch (dir)

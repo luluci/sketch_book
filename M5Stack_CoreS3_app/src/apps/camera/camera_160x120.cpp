@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "camera_160x120.hpp"
 
 #include <lvgl.h>
 
@@ -12,10 +12,10 @@
 namespace app
 {
 
-	camera::camera() : style_select_(), obj_title_lbl_(), is_update_(false)
+	camera_160x120::camera_160x120() : style_select_(), obj_title_lbl_(), is_update_(false)
 	{
 	}
-	bool camera::init(lv_obj_t *parent)
+	bool camera_160x120::init(lv_obj_t *parent)
 	{
 		//
 		parent_ = parent;
@@ -51,7 +51,6 @@ namespace app
 		//  lv_style_set_width(&style_cover_, LV_PCT(100));
 
 		// label setting
-		lv_label_set_text(obj_title_lbl_.get(), "Camera");
 		lv_obj_add_style(obj_title_lbl_.get(), &style_select_, LV_PART_MAIN);
 		lv_obj_align(obj_title_lbl_.get(), LV_ALIGN_TOP_LEFT, 0, 0);
 
@@ -59,20 +58,22 @@ namespace app
 		// lv_obj_add_event_cb(obj_base_.get(), cb_on_touch, LV_EVENT_RELEASED, this);
 		add_on_touch(obj_base_.get(), this);
 
+		update();
+
 		return true;
 	}
 
-	void camera::on_show()
+	void camera_160x120::on_show()
 	{
 		// nothing
 	}
-	void camera::on_hide()
+	void camera_160x120::on_hide()
 	{
 		is_update_ = false;
 		update();
 	}
 
-	void camera::on_timer(timer_tick_100ms)
+	void camera_160x120::on_timer(timer_tick_100ms)
 	{
 		if (is_update_)
 		{
@@ -81,26 +82,26 @@ namespace app
 		}
 	}
 
-	void camera::on_touch()
+	void camera_160x120::on_touch()
 	{
 		// タッチでカメラ画像更新有無を切り替える
 		is_update_ = !is_update_;
 		update();
 	}
 
-	void camera::update()
+	void camera_160x120::update()
 	{
 		if (is_update_)
 		{
-			lv_label_set_text_static(obj_title_lbl_.get(), "Camera:Active");
+			lv_label_set_text(obj_title_lbl_.get(), "Camera:Active");
 		}
 		else
 		{
-			lv_label_set_text_static(obj_title_lbl_.get(), "Camera:Inactive");
+			lv_label_set_text(obj_title_lbl_.get(), "Camera:Inactive");
 		}
 	}
 
-	void camera::update_camera()
+	void camera_160x120::update_camera()
 	{
 		if (is_update_)
 		{

@@ -7,7 +7,7 @@
 namespace app
 {
 
-	class camera : public base
+	class camera_160x120 : public base
 	{
 		lv_style_t style_select_;
 
@@ -18,7 +18,7 @@ namespace app
 		bool is_update_;
 
 	public:
-		camera();
+		camera_160x120();
 		bool init(lv_obj_t *parent);
 
 		void on_timer(timer_tick_100ms);
