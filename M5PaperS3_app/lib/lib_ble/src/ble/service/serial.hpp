@@ -52,13 +52,13 @@ namespace ble::service
         serial();
         ~serial();
 
-        bool setup(BLEServer *server);
+        bool setup(BLEServer *server) override;
 
         void onWrite(BLECharacteristic *pCharacteristic) override;
-        void onRead(BLECharacteristic *pCharacteristic);
+        void onRead(BLECharacteristic *pCharacteristic) override;
 
-        void start();
-        void stop();
+        void start() override;
+        void stop() override;
 
     private:
         service_state state_;

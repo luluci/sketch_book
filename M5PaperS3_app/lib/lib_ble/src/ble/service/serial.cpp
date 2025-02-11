@@ -56,11 +56,17 @@ namespace ble::service
 
     void serial::start()
     {
+        //
+        service_base::start();
+        //
         state_ = service_state::Active;
         event = static_cast<uint16_t>(serial_event::None);
     }
     void serial::stop()
     {
+        //
+        service_base::stop();
+        //
         state_ = service_state::Stop;
     }
 }

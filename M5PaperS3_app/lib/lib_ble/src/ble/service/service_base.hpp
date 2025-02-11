@@ -19,10 +19,10 @@ namespace ble::service
         service_base(char const *uuid);
         ~service_base();
 
-        bool setup(BLEServer *server);
+        virtual bool setup(BLEServer *server);
 
-        void start() {}
-        void stop() {}
+        virtual void start() {}
+        virtual void stop() {}
 
         char const *get_uuid() const { return uuid_; }
 

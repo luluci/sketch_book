@@ -19,7 +19,8 @@ void setup()
     M5.Lcd.println("Init Start.");
 
     M5.Lcd.println("Init BLE.");
-    ble_paper_s3.setup("M5PaperS3", ble::service::serial{});
+    BLE.add_service(&ble_serial);
+    BLE.setup("M5PaperS3");
 
     M5.Lcd.println("Init Fin.");
 }
@@ -53,14 +54,14 @@ void app()
             timer = 0;
             state = app_state::WaitBlePairing;
             // BLEサーバーを起動
-            ble_paper_s3.start();
+            BLE.start();
             //
             M5.Lcd.startWrite();
             M5.Lcd.clearDisplay();
             M5.Lcd.setCursor(5, 5);
             M5.Lcd.println("BLE Start. Wait Pairing.");
             M5.Lcd.print("PIN: ");
-            M5.Lcd.println(ble_paper_s3.get_device_addr_str());
+            M5.Lcd.println(BLE.get_device_addr_str());
             M5.Lcd.endWrite();
         }
         break;
@@ -77,7 +78,7 @@ void app()
 
 void check_ble_pairing()
 {
-    if (ble_paper_s3.is_connected())
+    if (BLE.is_connected())
     {
         //
         M5.Lcd.startWrite();
@@ -92,8 +93,7 @@ void check_ble_pairing()
 
 void check_event()
 {
-    ble::service::serial &serial = ble_paper_s3.get_service<0>();
-    auto event = serial.get_event();
+    auto event = ble_serial.get_event();
 
     switch (event)
     {
@@ -104,7 +104,7 @@ void check_event()
         M5.Lcd.setCursor(5, 5);
         for (size_t i = 0; i < 10; i++)
         {
-            M5.Lcd.println(serial.rx_buffer[i].c_str());
+            M5.Lcd.println(ble_serial.rx_buffer[i].c_str());
         }
         M5.Lcd.endWrite();
         break;
