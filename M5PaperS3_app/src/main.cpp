@@ -14,7 +14,7 @@ void setup()
     // m5::M5Unified::config_t cfg
     M5.begin();
 
-    M5.Lcd.setTextSize(6);
+    M5.Lcd.setTextSize(4);
     M5.Lcd.setCursor(5, 5);
     M5.Lcd.println("Init Start.");
 
@@ -95,18 +95,25 @@ void check_event()
 {
     auto event = ble_serial.get_event();
 
-    switch (event)
+    if ((event & (uint16_t)ble::service::serial_event::HasRecieve) != 0)
     {
-    case (uint16_t)ble::service::serial_event::HasRecieve:
         // 受信処理
         M5.Lcd.startWrite();
         M5.Lcd.clearDisplay();
         M5.Lcd.setCursor(5, 5);
-        for (size_t i = 0; i < 10; i++)
+        for (size_t i = 0; i < ble_serial.rx_buffer_index; i++)
         {
             M5.Lcd.println(ble_serial.rx_buffer[i].c_str());
         }
+        ble_serial.rx_buffer_index = 0;
         M5.Lcd.endWrite();
-        break;
+    }
+    if ((event & (uint16_t)ble::service::serial_event::HasRead) != 0)
+    {
+        M5.Lcd.startWrite();
+        M5.Lcd.clearDisplay();
+        M5.Lcd.setCursor(5, 5);
+        M5.Lcd.println("BLE Serial any read occur.");
+        M5.Lcd.endWrite();
     }
 }

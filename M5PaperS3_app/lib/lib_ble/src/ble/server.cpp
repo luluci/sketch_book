@@ -18,8 +18,8 @@ namespace ble
         device_name_ = device_name;
         //
         BLEDevice::init(device_name_);
-        BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
-        BLEDevice::setSecurityCallbacks(this);
+        // BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
+        // BLEDevice::setSecurityCallbacks(this);
         // Server
         server_ = BLEDevice::createServer();
         server_->setCallbacks(this);
@@ -42,7 +42,7 @@ namespace ble
             return;
         }
 
-        // Advertising開始
+        // Advertising設定
         advertising_ = server_->getAdvertising();
         add_service_uuid_for_advertising();
         advertising_->setDeviceAddress(device_addr, BLE_ADDR_TYPE_RANDOM);
@@ -53,10 +53,13 @@ namespace ble
         advertising_->setMinPreferred(0x06);
         advertising_->setMinPreferred(0x12);
 
-        advertising_->start();
-        // BLEDevice::startAdvertising();
+        // 先にserviceを起動する？
         start_services();
         state_ = server_state::Advertising;
+
+        // Advertising開始
+        advertising_->start();
+        // BLEDevice::startAdvertising();
     }
 
     void server::onConnect(BLEServer *)

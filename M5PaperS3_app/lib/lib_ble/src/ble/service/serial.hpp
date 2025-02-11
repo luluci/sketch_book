@@ -17,6 +17,7 @@ namespace ble::service
     {
         None = 0,
         HasRecieve = 0x01,
+        HasRead = 0x02,
 
         MAX
     };

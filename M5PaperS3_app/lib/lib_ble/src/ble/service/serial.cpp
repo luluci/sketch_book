@@ -29,29 +29,31 @@ namespace ble::service
         tx_characteristic->setWriteNoResponseProperty(true);
         rx_characteristic->setWriteNoResponseProperty(true);
 
+        tx_characteristic->setCallbacks(this);
         rx_characteristic->setCallbacks(this);
-        // service_->start();
 
         return true;
     }
     void serial::onWrite(BLECharacteristic *pCharacteristic)
     {
         //
-        if (state_ != service_state::Active)
-            return;
+        // if (state_ != service_state::Active)
+        //     return;
         //
-        if (pCharacteristic->getUUID().toString() == NORDIC_RX_UUID)
+        // if (pCharacteristic->getUUID().toString() == NORDIC_RX_UUID)
         {
             //
             if (rx_buffer_index < rx_buffer_size)
             {
                 rx_buffer[rx_buffer_index] = pCharacteristic->getValue();
                 rx_buffer_index++;
+                event |= (uint16_t)serial_event::HasRecieve;
             }
         }
     }
     void serial::onRead(BLECharacteristic *pCharacteristic)
     {
+        event |= (uint16_t)serial_event::HasRead;
     }
 
     void serial::start()

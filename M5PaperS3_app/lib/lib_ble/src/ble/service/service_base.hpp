@@ -21,8 +21,8 @@ namespace ble::service
 
         virtual bool setup(BLEServer *server);
 
-        virtual void start() {}
-        virtual void stop() {}
+        virtual void start();
+        virtual void stop();
 
         char const *get_uuid() const { return uuid_; }
 
