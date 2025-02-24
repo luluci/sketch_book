@@ -17,4 +17,18 @@ namespace ble
         Active,
         Stop,
     };
+
+    enum server_event
+    {
+        None = 0,
+        onConnect = 0x0001,
+        onDisconnect = 0x0002,
+        onPassKeyRequest,
+        onPassKeyNotify,
+        onSecurityRequest,
+        onAuthenticationComplete,
+        onConfirmPIN,
+
+        MAX
+    };
 }

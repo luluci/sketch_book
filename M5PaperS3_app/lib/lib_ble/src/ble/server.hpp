@@ -25,11 +25,27 @@ namespace ble
         BLEServer *server_ = nullptr;
         BLESecurity *security_ = nullptr;
         BLEAdvertising *advertising_ = nullptr;
+        uint32_t event_;
         // Services
         std::vector<service::service_base *> services_;
+        // Security
+        uint32_t pass_key_;
+        esp_ble_auth_cmpl_t auth_cmpl_;
 
     public:
-        bool is_connected()
+        uint32_t get_event()
+        {
+            auto result = event_;
+            event_ = server_event::None;
+            return result;
+        }
+        uint32_t get_pass_key()
+        {
+            return pass_key_;
+        }
+
+        bool
+        is_connected()
         {
             return state_ == server_state::Connected;
         }

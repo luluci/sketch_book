@@ -8,13 +8,16 @@
 void app();
 void check_ble_pairing();
 void check_event();
+void check_psram();
+
+size_t lcd_line_count = 0;
 
 void setup()
 {
     // m5::M5Unified::config_t cfg
     M5.begin();
 
-    M5.Lcd.setTextSize(4);
+    M5.Lcd.setTextSize(3);
     M5.Lcd.setCursor(5, 5);
     M5.Lcd.println("Init Start.");
 
@@ -23,6 +26,7 @@ void setup()
     BLE.setup("M5PaperS3");
 
     M5.Lcd.println("Init Fin.");
+    check_psram();
 }
 
 void loop()
@@ -93,27 +97,102 @@ void check_ble_pairing()
 
 void check_event()
 {
-    auto event = ble_serial.get_event();
-
-    if ((event & (uint16_t)ble::service::serial_event::HasRecieve) != 0)
+    // service event
     {
-        // 受信処理
-        M5.Lcd.startWrite();
-        M5.Lcd.clearDisplay();
-        M5.Lcd.setCursor(5, 5);
-        for (size_t i = 0; i < ble_serial.rx_buffer_index; i++)
+        auto event = BLE.get_event();
+        if (event != 0)
         {
-            M5.Lcd.println(ble_serial.rx_buffer[i].c_str());
+            M5.Lcd.startWrite();
+            if (lcd_line_count > 30)
+            {
+                lcd_line_count = 0;
+                M5.Lcd.clearDisplay();
+                M5.Lcd.setCursor(5, 5);
+            }
+
+            if ((event & ble::server_event::onConnect) != 0)
+            {
+                M5.Lcd.println("onConnect");
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onDisconnect) != 0)
+            {
+                M5.Lcd.println("onDisconnect");
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onPassKeyRequest) != 0)
+            {
+                M5.Lcd.printf("onPassKeyRequest : %d\n", BLE.get_pass_key());
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onPassKeyNotify) != 0)
+            {
+                M5.Lcd.printf("onPassKeyNotify : %d\n", BLE.get_pass_key());
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onSecurityRequest) != 0)
+            {
+                M5.Lcd.println("onSecurityRequest");
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onAuthenticationComplete) != 0)
+            {
+                M5.Lcd.println("onAuthenticationComplete");
+                lcd_line_count++;
+            }
+            if ((event & ble::server_event::onConfirmPIN) != 0)
+            {
+                M5.Lcd.println("onConfirmPIN");
+                lcd_line_count++;
+            }
+
+            M5.Lcd.endWrite();
         }
-        ble_serial.rx_buffer_index = 0;
-        M5.Lcd.endWrite();
     }
-    if ((event & (uint16_t)ble::service::serial_event::HasRead) != 0)
+    // serial event
     {
-        M5.Lcd.startWrite();
-        M5.Lcd.clearDisplay();
-        M5.Lcd.setCursor(5, 5);
-        M5.Lcd.println("BLE Serial any read occur.");
-        M5.Lcd.endWrite();
+        auto event = ble_serial.get_event();
+        if (event != 0)
+        {
+            M5.Lcd.startWrite();
+            if (lcd_line_count > 30)
+            {
+                lcd_line_count = 0;
+                M5.Lcd.clearDisplay();
+                M5.Lcd.setCursor(5, 5);
+            }
+
+            if ((event & (uint16_t)ble::service::serial_event::HasRecieve) != 0)
+            {
+                // 受信処理
+                for (size_t i = 0; i < ble_serial.rx_buffer_index; i++)
+                {
+                    M5.Lcd.println(ble_serial.rx_buffer[i].c_str());
+                    lcd_line_count++;
+                }
+                ble_serial.rx_buffer_index = 0;
+                check_psram();
+            }
+            if ((event & (uint16_t)ble::service::serial_event::HasRead) != 0)
+            {
+                M5.Lcd.println("BLE Serial any read occur.");
+                lcd_line_count++;
+            }
+            if ((event & (uint16_t)ble::service::serial_event::HasNotify) != 0)
+            {
+                M5.Lcd.println("BLE Serial Notify occur.");
+                lcd_line_count++;
+            }
+
+            M5.Lcd.endWrite();
+        }
     }
+}
+
+void check_psram()
+{
+    multi_heap_info_t info;
+    heap_caps_get_info(&info, MALLOC_CAP_SPIRAM);
+    M5.Lcd.printf("PSRAM: %d / %d\n", info.total_allocated_bytes, info.total_free_bytes);
+    lcd_line_count++;
 }

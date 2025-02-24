@@ -19,7 +19,7 @@ namespace ble
         //
         BLEDevice::init(device_name_);
         // BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
-        // BLEDevice::setSecurityCallbacks(this);
+        BLEDevice::setSecurityCallbacks(this);
         // Server
         server_ = BLEDevice::createServer();
         server_->setCallbacks(this);
@@ -68,6 +68,7 @@ namespace ble
         advertising_->stop();
         // BLEDevice::stopAdvertising();
         state_ = server_state::Connected;
+        event_ |= server_event::onConnect;
     }
 
     void server::onDisconnect(BLEServer *)
@@ -77,28 +78,36 @@ namespace ble
         advertising_->start();
         // BLEDevice::startAdvertising();
         state_ = server_state::Advertising;
+        event_ |= server_event::onDisconnect;
     }
 
     uint32_t server::onPassKeyRequest()
     {
-        return 0;
+        event_ |= server_event::onPassKeyRequest;
+        return pass_key_;
     }
 
     void server::onPassKeyNotify(uint32_t pass_key)
     {
+        event_ |= server_event::onPassKeyNotify;
+        pass_key_ = pass_key;
     }
 
     bool server::onSecurityRequest()
     {
+        event_ |= server_event::onSecurityRequest;
         return true;
     }
 
-    void server::onAuthenticationComplete(esp_ble_auth_cmpl_t)
+    void server::onAuthenticationComplete(esp_ble_auth_cmpl_t auth_cmpl)
     {
+        event_ |= server_event::onAuthenticationComplete;
+        auth_cmpl_ = auth_cmpl;
     }
 
     bool server::onConfirmPIN(uint32_t pin)
     {
+        event_ |= server_event::onConfirmPIN;
         return true;
     }
 

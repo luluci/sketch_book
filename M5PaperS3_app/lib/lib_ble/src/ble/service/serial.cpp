@@ -46,14 +46,23 @@ namespace ble::service
             if (rx_buffer_index < rx_buffer_size)
             {
                 rx_buffer[rx_buffer_index] = pCharacteristic->getValue();
+                notify_buff = "resp:" + rx_buffer[rx_buffer_index];
                 rx_buffer_index++;
                 event |= (uint16_t)serial_event::HasRecieve;
+                //
+                notify();
             }
         }
     }
     void serial::onRead(BLECharacteristic *pCharacteristic)
     {
         event |= (uint16_t)serial_event::HasRead;
+    }
+
+    void serial::onNotify(BLECharacteristic *pCharacteristic)
+    {
+        // 自分がNotifyを通知したことのコールバック
+        event |= (uint16_t)serial_event::HasNotify;
     }
 
     void serial::start()
@@ -70,5 +79,10 @@ namespace ble::service
         service_base::stop();
         //
         state_ = service_state::Stop;
+    }
+    void serial::notify()
+    {
+        tx_characteristic->setValue(notify_buff);
+        tx_characteristic->notify();
     }
 }

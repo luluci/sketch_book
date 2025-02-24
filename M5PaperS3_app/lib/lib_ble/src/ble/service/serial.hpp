@@ -16,8 +16,9 @@ namespace ble::service
     enum class serial_event : uint16_t
     {
         None = 0,
-        HasRecieve = 0x01,
-        HasRead = 0x02,
+        HasRecieve = (1 << 0),
+        HasRead = (1 << 1),
+        HasNotify = (1 << 2),
 
         MAX
     };
@@ -48,6 +49,8 @@ namespace ble::service
         static constexpr size_t rx_buffer_size = 10;
         std::array<std::string, rx_buffer_size> rx_buffer;
         size_t rx_buffer_index = 0;
+        // Notifyバッファ
+        std::string notify_buff;
 
     public:
         serial();
@@ -57,9 +60,12 @@ namespace ble::service
 
         void onWrite(BLECharacteristic *pCharacteristic) override;
         void onRead(BLECharacteristic *pCharacteristic) override;
+        void onNotify(BLECharacteristic *pCharacteristic) override;
 
         void start() override;
         void stop() override;
+
+        void notify();
 
     private:
         service_state state_;
