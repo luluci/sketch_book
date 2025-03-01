@@ -224,7 +224,12 @@ namespace ble::service
 
         // データ取得
         bool has_data() const { return data_buff_cmpl; }
-        psram_ptr_t &&get_buff() { return std::move(data_buff); }
+        psram_ptr_t &&get_buff()
+        {
+            data_buff_size = 0;
+            data_buff_cmpl = false;
+            return std::move(data_buff);
+        }
 
     private:
         service_state state_;

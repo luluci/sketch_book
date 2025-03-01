@@ -79,12 +79,23 @@ namespace ble::service
     {
         // 周期処理
         // タイムアウト監視
-        timeout_timer += cycle_ms;
-        if (timeout_timer > timeout_limit)
+        switch (dt_state_)
         {
-            // タイムアウト
-            event |= static_cast<uint16_t>(data_trans_event::DataRecvTimeout);
-            init_state();
+        case data_trans_state::Init:
+            // nothing
+            break;
+
+        case data_trans_state::DataRecving:
+        default:
+            // 通信中はタイムアウト判定
+            timeout_timer += cycle_ms;
+            if (timeout_timer > timeout_limit)
+            {
+                // タイムアウト
+                event |= static_cast<uint16_t>(data_trans_event::DataRecvTimeout);
+                init_state();
+            }
+            break;
         }
     }
 
@@ -99,6 +110,7 @@ namespace ble::service
             break;
 
         case data_trans_state::DataRecving:
+            analyze_rx_data_recving(buff, len);
             break;
 
         default:
