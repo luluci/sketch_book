@@ -26,7 +26,7 @@ namespace ble::service
         tx_characteristic->setReadProperty(true);
         rx_characteristic->setWriteProperty(true);
 
-        tx_characteristic->setWriteNoResponseProperty(true);
+        // tx_characteristic->setWriteNoResponseProperty(true);
         rx_characteristic->setWriteNoResponseProperty(true);
 
         tx_characteristic->setCallbacks(this);
