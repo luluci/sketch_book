@@ -45,6 +45,21 @@ void loop()
     delay(app_cycle);
 }
 
+void start_disp()
+{
+    M5.Lcd.startWrite();
+    if (lcd_line_count > 30)
+    {
+        lcd_line_count = 0;
+        M5.Lcd.clearDisplay();
+        M5.Lcd.setCursor(5, 5);
+    }
+}
+void end_disp()
+{
+    M5.Lcd.endWrite();
+}
+
 enum class app_state
 {
     InitWait,
@@ -53,6 +68,7 @@ enum class app_state
 };
 app_state state = app_state::InitWait;
 size_t timer = 0;
+size_t ble_data_trans_timer = 0;
 
 void app()
 {
@@ -118,13 +134,7 @@ void check_event_ble_server()
     auto event = BLE.get_event();
     if (event != 0)
     {
-        M5.Lcd.startWrite();
-        if (lcd_line_count > 30)
-        {
-            lcd_line_count = 0;
-            M5.Lcd.clearDisplay();
-            M5.Lcd.setCursor(5, 5);
-        }
+        start_disp();
 
         if ((event & ble::server_event::onConnect) != 0)
         {
@@ -162,7 +172,7 @@ void check_event_ble_server()
             lcd_line_count++;
         }
 
-        M5.Lcd.endWrite();
+        end_disp();
     }
 }
 
@@ -171,13 +181,7 @@ void check_event_ble_serial()
     auto event = ble_serial.get_event();
     if (event != 0)
     {
-        M5.Lcd.startWrite();
-        if (lcd_line_count > 30)
-        {
-            lcd_line_count = 0;
-            M5.Lcd.clearDisplay();
-            M5.Lcd.setCursor(5, 5);
-        }
+        start_disp();
 
         if ((event & (uint16_t)ble::service::serial_event::HasRecieve) != 0)
         {
@@ -201,12 +205,63 @@ void check_event_ble_serial()
             lcd_line_count++;
         }
 
-        M5.Lcd.endWrite();
+        end_disp();
     }
 }
 
 void check_event_ble_data_trans()
 {
+    auto event = ble_data_trans.get_event();
+    if (event != 0)
+    {
+        start_disp();
+
+        //
+        if ((event & (uint16_t)ble::service::data_trans_event::DataRecvFailed) != 0)
+        {
+            event = 0;
+            M5.Lcd.println("DataRecvFailed");
+            lcd_line_count++;
+        }
+        if ((event & (uint16_t)ble::service::data_trans_event::DataRecvTimeout) != 0)
+        {
+            event = 0;
+            M5.Lcd.println("DataRecvTimeout");
+            lcd_line_count++;
+        }
+        if ((event & (uint16_t)ble::service::data_trans_event::PSRAMAllocFailed) != 0)
+        {
+            event = 0;
+            M5.Lcd.println("PSRAMAllocFailed");
+            lcd_line_count++;
+        }
+
+        // データ転送開始
+        if ((event & (uint16_t)ble::service::data_trans_event::DataRecvStart) != 0)
+        {
+            M5.Lcd.println("DataRecvStart");
+            lcd_line_count++;
+        }
+        // データ受信中
+        if ((event & (uint16_t)ble::service::data_trans_event::DataRecving) != 0)
+        {
+            ble_data_trans_timer++;
+            if (ble_data_trans_timer > 10)
+            {
+                ble_data_trans_timer = 0;
+                M5.Lcd.printf("DataRecing: %d / %d\n", ble_data_trans.recv_page, ble_data_trans.declare_buff.data.body.page_max);
+                lcd_line_count++;
+            }
+        }
+        // データ受信完了
+        if ((event & (uint16_t)ble::service::data_trans_event::DataRecvSuccess) != 0)
+        {
+            M5.Lcd.println("DataRecvSuccess");
+            lcd_line_count++;
+        }
+
+        end_disp();
+    }
 }
 
 void check_psram()
