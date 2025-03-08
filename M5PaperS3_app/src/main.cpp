@@ -222,17 +222,23 @@ void check_event_ble_data_trans()
             event = 0;
             M5.Lcd.println("DataRecvFailed");
             lcd_line_count++;
+            M5.Lcd.println(ble_data_trans.err_msg);
+            lcd_line_count++;
         }
         if ((event & (uint16_t)ble::service::data_trans_event::DataRecvTimeout) != 0)
         {
             event = 0;
             M5.Lcd.println("DataRecvTimeout");
             lcd_line_count++;
+            M5.Lcd.println(ble_data_trans.err_msg);
+            lcd_line_count++;
         }
         if ((event & (uint16_t)ble::service::data_trans_event::PSRAMAllocFailed) != 0)
         {
             event = 0;
             M5.Lcd.println("PSRAMAllocFailed");
+            lcd_line_count++;
+            M5.Lcd.println(ble_data_trans.err_msg);
             lcd_line_count++;
         }
 
@@ -256,8 +262,26 @@ void check_event_ble_data_trans()
         // データ受信完了
         if ((event & (uint16_t)ble::service::data_trans_event::DataRecvSuccess) != 0)
         {
-            M5.Lcd.println("DataRecvSuccess");
-            lcd_line_count++;
+            if (ble_data_trans.declare_buff.data.header.data_type == ble::service::data_trans_data_type::file_PNG)
+            {
+                // BLEで取得したデータをunique_ptrのmoveで取得する
+                // 代わりにすでに取得済みunique_ptrがあるなら再利用するように返す
+                // ble_data_png_size = ble_data_trans.get_buff_size();
+                // ble_data_png = ble_data_trans.get_buff();
+                ble_data_trans.get_buff(ble_data_png, ble_data_png_size);
+                if (ble_data_png)
+                {
+                    //
+                    lcd_line_count = 0;
+                    M5.Lcd.clearDisplay();
+                    M5.Lcd.setCursor(0, 0);
+                    M5.Lcd.drawPng(ble_data_png.get(), ble_data_png_size);
+                    //
+                    M5.Lcd.println("DataRecved: PNG");
+                    M5.Lcd.printf("  size: %d\n", ble_data_png_size);
+                    lcd_line_count++;
+                }
+            }
         }
 
         end_disp();

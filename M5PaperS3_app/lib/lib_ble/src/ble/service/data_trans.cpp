@@ -193,7 +193,7 @@ namespace ble::service
             // エラーメッセージ
             snprintf(err_msg, err_msg_len, "Invalid packet length: %d", len);
             event |= static_cast<uint16_t>(data_trans_event::DataRecvFailed);
-            notify_declare_ng(data_trans_resp_reject_reason::InvalidPacketLength);
+            notify_content_ng(data_trans_resp_reject_reason::InvalidPacketLength);
             init_state();
             return;
         }
@@ -246,11 +246,21 @@ namespace ble::service
             notify_data_complete();
             init_state();
         }
-        else
+        else if (data_recv_size < declare_buff.data.body.data_len)
         {
             // 受信継続
             event |= static_cast<uint16_t>(data_trans_event::DataRecving);
             notify_content_ok();
+        }
+        else
+        {
+            // 受信サイズ超過エラー
+            // エラーメッセージ
+            snprintf(err_msg, err_msg_len, "too large data recv: %d", data_recv_size);
+            event |= static_cast<uint16_t>(data_trans_event::DataRecvFailed);
+            notify_content_ng(data_trans_resp_reject_reason::TooLargeDataSize);
+            init_state();
+            return;
         }
     }
 

@@ -64,6 +64,7 @@ namespace ble::service
         InvalidDataType,
         FailedAllocPSRAM,
         InvalidPageNo,
+        TooLargeDataSize,
     };
     // 受信パケット定義
     // BLEパケットMTU=257バイト
@@ -72,7 +73,7 @@ namespace ble::service
     struct data_trans_packet_header
     {
         data_trans_command cmnd;        // コマンド
-        uint8_t len;                    // ボディサイズ
+        uint8_t len;                    // ボディサイズ(declare:8byte固定, content:X/120byteのXを格納)
         data_trans_data_type data_type; // 転送データの内容
         uint8_t page;                   // 転送データページ番号(0 ~ page_max-1)
         uint32_t reserve;               // reserve
@@ -129,6 +130,9 @@ namespace ble::service
             struct
             {
                 data_trans_resp_reject_reason reason;
+                uint8_t reserve1;
+                uint8_t reserve2;
+                uint8_t reserve3;
             } reject;
         } detail;
     };
@@ -166,6 +170,7 @@ namespace ble::service
         uint32_t timeout_timer;                              // タイムアウトカウンタ(ms)
         static constexpr uint32_t timeout_limit = 1000 * 10; // タイムアウト時間(ms)
 
+    public:
         // PSRAM
         template <typename T>
         T *psram_malloc(size_t size)
@@ -224,11 +229,21 @@ namespace ble::service
 
         // データ取得
         bool has_data() const { return data_buff_cmpl; }
+        // data_buff_sizeを取得, get_buff()より先に実行すること
+        size_t get_buff_size() const { return data_buff_size; }
         psram_ptr_t &&get_buff()
         {
             data_buff_size = 0;
             data_buff_cmpl = false;
             return std::move(data_buff);
+        }
+        void get_buff(psram_ptr_t &buff, size_t &buff_size)
+        {
+            // data_buffがnullptrでもbuffとswapする
+            std::swap(buff, data_buff);
+            auto temp = data_buff_size;
+            data_buff_size = buff_size;
+            buff_size = temp;
         }
 
     private:
