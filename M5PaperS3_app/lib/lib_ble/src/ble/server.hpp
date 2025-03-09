@@ -90,6 +90,7 @@ namespace ble
         void add_service(service::service_base *service) { services_.push_back(service); }
         void setup(char const *device_name);
         void start();
+        void stop();
 
         // Impl BLEServerCallbacks
         void onConnect(BLEServer *);

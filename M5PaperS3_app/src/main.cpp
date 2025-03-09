@@ -8,6 +8,7 @@
 void app();
 void check_ble_pairing();
 void check_event();
+void check_event_touch();
 void check_event_ble_server();
 void check_event_ble_serial();
 void check_event_ble_data_trans();
@@ -22,6 +23,13 @@ void setup()
 {
     // m5::M5Unified::config_t cfg
     M5.begin();
+
+    //
+    M5.Speaker.begin();
+    M5.Speaker.stop();
+
+    // LCD
+    M5.Lcd.setRotation(2);
 
     M5.Lcd.setTextSize(3);
     M5.Lcd.setCursor(5, 5);
@@ -101,6 +109,9 @@ void app()
         check_event();
         break;
     }
+
+    // touch
+    check_event_touch();
 }
 
 void check_ble_pairing()
@@ -127,6 +138,37 @@ void check_event()
     // data_trans event
     ble_data_trans.polling(app_cycle);
     check_event_ble_data_trans();
+}
+
+bool is_flicking = false;
+void check_event_touch()
+{
+    m5::Touch_Class::touch_detail_t const &touch = M5.Touch.getDetail();
+    if (touch.isFlicking())
+    {
+        if (!is_flicking)
+        {
+            is_flicking = true;
+            M5.Lcd.println("isFlicking");
+            lcd_line_count++;
+        }
+    }
+    if (touch.wasFlicked())
+    {
+        is_flicking = false;
+        M5.Lcd.println("wasFlicked");
+        lcd_line_count++;
+    }
+    if (touch.wasPressed())
+    {
+        M5.Lcd.println("wasPressed");
+        lcd_line_count++;
+    }
+    if (touch.wasReleased())
+    {
+        M5.Lcd.println("wasReleased");
+        lcd_line_count++;
+    }
 }
 
 void check_event_ble_server()

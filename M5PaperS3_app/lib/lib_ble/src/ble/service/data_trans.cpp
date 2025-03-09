@@ -92,6 +92,7 @@ namespace ble::service
             if (timeout_timer > timeout_limit)
             {
                 // タイムアウト
+                snprintf(err_msg, err_msg_len, "Data Recv Timeout");
                 event |= static_cast<uint16_t>(data_trans_event::DataRecvTimeout);
                 init_state();
             }

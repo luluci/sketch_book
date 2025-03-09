@@ -62,6 +62,27 @@ namespace ble
         // BLEDevice::startAdvertising();
     }
 
+    void server::stop()
+    {
+        // 初期状態では処理なし
+        if (state_ == server_state::Init)
+        {
+            return;
+        }
+
+        // Advertising中なら停止
+        if (state_ == server_state::Advertising)
+        {
+            advertising_->stop();
+        }
+
+        // 初期状態でなければService稼働中なので停止する
+        stop_services();
+
+        //
+        state_ = server_state::Init;
+    }
+
     void server::onConnect(BLEServer *)
     {
         // 接続通知
