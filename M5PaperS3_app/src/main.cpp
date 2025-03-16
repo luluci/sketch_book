@@ -5,7 +5,9 @@
 
 #include "ble_paper_s3.hpp"
 
-void app();
+#include "app/app.hpp"
+
+void app__();
 void check_ble_pairing();
 void check_event();
 void check_event_touch();
@@ -46,11 +48,15 @@ void setup()
 
 void loop()
 {
+
     M5.update();
 
-    app();
+    app__();
 
     delay(app_cycle);
+
+    // M5.update();
+    // delay(m5app());
 }
 
 void start_disp()
@@ -78,7 +84,7 @@ app_state state = app_state::InitWait;
 size_t timer = 0;
 size_t ble_data_trans_timer = 0;
 
-void app()
+void app__()
 {
     switch (state)
     {
