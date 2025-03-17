@@ -29,7 +29,7 @@ namespace app::components
             // 描画領域を塗りつぶし
             M5.Display.fillRect(x, y, w, h, TFT_WHITE);
             // 線を引く
-            M5.Display.drawLine(x + 2, y + 2, x2 - 4, y2 - 4);
+            M5.Display.drawRect(x + 2, y + 2, w - 4, h - 4, TFT_BLACK);
 
             M5.Display.setCursor(x + 10, y + 10);
             M5.Display.print("popup");
