@@ -9,7 +9,11 @@ namespace app
                  app_main(page_id::AppMain),
                  app::base_type(menu_header, menu_popup, app_main)
     {
-        m5app.init(page_id::MenuHeader, page_id::AppMain);
+    }
+
+    void app::init()
+    {
+        app::base_type::init(page_id::MenuHeader, page_id::AppMain);
     }
 
     size_t app::operator()()
@@ -63,5 +67,14 @@ namespace app
         }
 
         return false;
+    }
+
+    void app::render_begin()
+    {
+        M5.Display.startWrite();
+    }
+    void app::render_end()
+    {
+        M5.Display.endWrite();
     }
 }

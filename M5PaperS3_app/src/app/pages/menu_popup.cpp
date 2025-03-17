@@ -8,11 +8,11 @@ namespace app::pages
     menu_popup::menu_popup(id_type id_) : base_type::page(id_), popup(component_id::Popup)
     {
         // ポップアップ領域
-        set_coord(0, 80, 439, 699);
+        set_coord(0, 80, 440, 700);
 
         //
         add(popup);
-        popup.set_coord(0, 80, 439, 699);
+        popup.set_coord(0, 80, 440, 700);
     }
     bool menu_popup::check_polling()
     {

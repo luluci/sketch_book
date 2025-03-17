@@ -5,10 +5,19 @@
 
 namespace app::pages
 {
-    menu_header::menu_header(id_type id_) : base_type::page(id_), menu_button(component_id::Menu), line(component_id::BorderLine)
+    menu_header::menu_header(id_type id_)
+        : base_type::page(id_),
+          app(component_id::Base),
+          menu_button(component_id::Menu),
+          line(component_id::BorderLine)
     {
         // メニューバー領域
-        set_coord(0, 0, 539, 79);
+        set_coord(0, 0, 540, 80);
+
+        // メニューベース
+        add(app);
+        app.set_hit(false);
+        app.set_coord(0, 0, 540, 80);
 
         // メニューボタン
         add(menu_button);
@@ -19,7 +28,7 @@ namespace app::pages
         // メニューバー区切り線
         add(line);
         line.set_hit(false);
-        line.set_coord(0, 79 - 1, 539, 79);
+        line.set_coord(0, 74 - 1, 540, 5);
     }
     bool menu_header::check_polling()
     {

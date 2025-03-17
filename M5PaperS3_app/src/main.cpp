@@ -23,40 +23,77 @@ size_t lcd_line_count = 0;
 
 void setup()
 {
-    // m5::M5Unified::config_t cfg
-    M5.begin();
+    try
+    {
+        // m5::M5Unified::config_t cfg
+        M5.begin();
 
-    //
-    M5.Speaker.begin();
-    M5.Speaker.stop();
+        //
+        M5.Speaker.begin();
+        M5.Speaker.stop();
 
-    // LCD
-    M5.Lcd.setRotation(2);
+        // LCD
+        M5.Lcd.setRotation(2);
 
-    M5.Lcd.setTextSize(3);
-    M5.Lcd.setCursor(5, 5);
-    M5.Lcd.println("Init Start.");
+        M5.Lcd.setTextSize(3);
+        M5.Lcd.setCursor(5, 5);
+        M5.Lcd.println("Init Start.");
 
-    M5.Lcd.println("Init BLE.");
-    BLE.add_service(&ble_serial);
-    BLE.add_service(&ble_data_trans);
-    BLE.setup("M5PaperS3");
+        M5.Lcd.println("Init BLE.");
+        BLE.add_service(&ble_serial);
+        BLE.add_service(&ble_data_trans);
+        BLE.setup("M5PaperS3");
 
-    M5.Lcd.println("Init Fin.");
-    check_psram();
+        M5.Lcd.println("Init Fin.");
+        check_psram();
+
+        // app初期化
+        m5app.init();
+        // app構築に失敗したら
+        if (!m5app.is_build_ok)
+        {
+            M5.Lcd.printf("GUI page size: %d\n", m5app.pages.size());
+            for (int i = 0; i < m5app.pages.size(); i++)
+            {
+                auto &page = m5app.pages[i];
+                M5.Lcd.printf(" page[%d]: id=%d\n", i, page->id);
+            }
+        }
+    }
+    catch (const std::runtime_error &e)
+    {
+        M5.Lcd.printf("setup() exception occur!\n");
+        M5.Lcd.printf("msg: %s\n", e.what());
+        while (true)
+        {
+            delay(10000);
+        }
+    }
 }
 
 void loop()
 {
+    try
+    {
 
-    M5.update();
+        // M5.update();
 
-    app__();
+        // app__();
 
-    delay(app_cycle);
+        // delay(app_cycle);
 
-    // M5.update();
-    // delay(m5app());
+        // M5.update();
+        delay(m5app());
+    }
+    catch (const std::runtime_error &e)
+    {
+        M5.Lcd.printf("loop() exception occur!\n");
+        M5.Lcd.printf("msg: %s\n", e.what());
+        while (true)
+        {
+            delay(10000);
+        }
+    }
 }
 
 void start_disp()
@@ -103,6 +140,7 @@ void app__()
             M5.Lcd.println("BLE Start. Wait Pairing.");
             M5.Lcd.print("PIN: ");
             M5.Lcd.println(BLE.get_device_addr_str());
+            //
             M5.Lcd.endWrite();
         }
         break;

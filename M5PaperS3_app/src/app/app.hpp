@@ -33,11 +33,16 @@ namespace app
 
         app();
 
+        void init();
+
         size_t operator()();
 
     private:
         bool check_event();
         bool check_event_touch();
+
+        virtual void render_begin() override;
+        virtual void render_end() override;
     };
 }
 

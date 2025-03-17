@@ -8,11 +8,11 @@ namespace app::pages
     app_main::app_main(id_type id_) : base_type::page(id_), app(component_id::App)
     {
         // ポップアップ領域
-        set_coord(0, 80, 539, 960);
+        set_coord(0, 80, 540, 880);
 
         //
         add(app);
-        app.set_coord(0, 80, 539, 960);
+        app.set_coord(0, 80, 540, 880);
     }
     bool app_main::check_polling()
     {

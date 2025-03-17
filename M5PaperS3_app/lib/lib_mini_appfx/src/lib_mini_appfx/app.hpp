@@ -12,6 +12,7 @@ namespace lib_mini_appfx
     template <typename Id>
     class app
     {
+    public:
         // Idはenumによる連番で指定する
         // Idは最大要素数を示すMAXを持つ必要がある
         using id_type = Id;
@@ -35,22 +36,41 @@ namespace lib_mini_appfx
         request_container_type request_queue;
 
     public:
+        bool is_build_ok;
+
+    public:
         // pageのポインタを管理する
         template <typename... Args>
-        app(Args &...args) : pages{(reinterpret_cast<page_type *>(&args))...}, request_queue(10)
+        app(Args &...args) : pages{(reinterpret_cast<page_type *>(&args))...}, request_queue(10), is_build_ok(false)
+        {
+            // 基底クラス、派生クラスの関係でコンストラクト後に初期設定を実施する
+        }
+        // pageインスタンスは保持しない
+        template <typename... Args>
+        app(Args &&...args) = delete;
+        // 後からpage追加は対応しない？
+        // void add_page(page_type &p)
+        // {
+        //     pages.push_back(&p);
+        // }
+        // void add_page(page_type &&p) {}
+
+        void init(id_type menu_id, id_type app_id)
         {
             // page設定チェック
             // コンストラクタで全ページ要素をセットする？
             if ((size_t)id_type::MAX != pages.size())
             {
-                throw std::runtime_error("required: pages item set to app ctor.");
+                // throw std::runtime_error("required: pages item set to app ctor.");
+                return;
             }
             for (size_t i = 0; i < pages.size(); i++)
             {
                 auto &page = pages[i];
                 if ((size_t)page->id != i)
                 {
-                    throw std::runtime_error("required: pages-item in app ctor is ordered as enum.");
+                    // throw std::runtime_error("required: pages-item in app ctor is ordered as enum.");
+                    return;
                 }
                 //
                 page->set_request_queue(&request_queue);
@@ -65,23 +85,24 @@ namespace lib_mini_appfx
             // {
             //     // ありえない
             // }
-        }
-        // pageインスタンスは保持しない
-        template <typename... Args>
-        app(Args &&...args) = delete;
-        // 後からpage追加は対応しない？
-        // void add_page(page_type &p)
-        // {
-        //     pages.push_back(&p);
-        // }
-        // void add_page(page_type &&p) {}
 
-        void init(id_type menu_id, id_type app_id)
-        {
+            // 初期表示ページを設定する
             menu_page = pages[menu_id];
 
             app_page = pages[app_id];
             app_page_layer.push_back(app_page);
+
+            //
+            refresh();
+
+            is_build_ok = true;
+        }
+        void refresh()
+        {
+            render_begin();
+            app_page->render(true, 0);
+            menu_page->render(true, 0);
+            render_end();
         }
 
         // ページタッチ判定
@@ -134,10 +155,12 @@ namespace lib_mini_appfx
 
         void exec_request()
         {
+            render_begin();
             for (auto &req : request_queue)
             {
                 exec_request_impl(req);
             }
+            render_end();
             request_queue.clear();
         }
         void exec_request_impl(request_type &req)
@@ -170,5 +193,8 @@ namespace lib_mini_appfx
                 break;
             }
         }
+
+        virtual void render_begin() = 0;
+        virtual void render_end() = 0;
     };
 }

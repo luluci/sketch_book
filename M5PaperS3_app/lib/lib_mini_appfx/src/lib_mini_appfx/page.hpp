@@ -43,8 +43,8 @@ namespace lib_mini_appfx
             y = y_;
             w = w_;
             h = h_;
-            x2 = x_ + w_;
-            y2 = y_ + h_;
+            x2 = x_ + w_ - 1;
+            y2 = y_ + h_ - 1;
         }
 
         // 周期処理判定

@@ -2,6 +2,7 @@
 
 #include <lib_mini_appfx/page.hpp>
 
+#include "../components/app.hpp"
 #include "../components/button_label.hpp"
 #include "../components/line.hpp"
 #include "../page_id.hpp"
@@ -12,6 +13,7 @@ namespace app::pages
 
     enum class menu_header_component_id
     {
+        Base,
         Menu,
         BorderLine
     };
@@ -25,6 +27,7 @@ namespace app::pages
     public:
         using base_type = lib_mini_appfx::page<page_id, component_id>;
 
+        components::app<component_id> app;
         components::button_label<component_id> menu_button;
         components::line<component_id> line;
 
