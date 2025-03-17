@@ -35,7 +35,11 @@ namespace app::components
 
         button_label(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr) {}
 
-        void set_text(char const *text_) { text = text_; }
+        void set_text(char const *text_)
+        {
+            text = text_;
+            update();
+        }
         void set_font(font_info const &font_)
         {
             font = &font_;

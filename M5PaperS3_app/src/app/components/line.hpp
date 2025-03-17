@@ -27,7 +27,7 @@ namespace app::components
         {
             // 下線を引く
             // M5.Display.drawFastHLine(x, y2, w);
-            M5.Display.drawLine(x, y, x2, y2);
+            M5.Display.fillRect(x, y, w, h, TFT_BLACK);
         }
     };
 }

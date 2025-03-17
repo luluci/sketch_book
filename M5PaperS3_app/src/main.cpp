@@ -35,7 +35,8 @@ void setup()
         // LCD
         M5.Lcd.setRotation(2);
 
-        M5.Lcd.setTextSize(3);
+        M5.Lcd.setFont(app::resrc.font_default.get());
+        M5.Lcd.setTextSize(1);
         M5.Lcd.setCursor(5, 5);
         M5.Lcd.println("Init Start.");
 

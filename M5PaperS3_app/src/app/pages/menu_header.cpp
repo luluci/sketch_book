@@ -21,14 +21,14 @@ namespace app::pages
 
         // メニューボタン
         add(menu_button);
-        menu_button.set_coord(5, 5, 100 - 10, 80 - 10);
+        menu_button.set_coord(5, 5, 120 - 10, 80 - 10);
         menu_button.set_text("MENU");
         menu_button.set_font(resrc.font_menu);
 
         // メニューバー区切り線
         add(line);
         line.set_hit(false);
-        line.set_coord(0, 74 - 1, 540, 5);
+        line.set_coord(0, 80 - 5 - 1, 540, 5);
     }
     bool menu_header::check_polling()
     {

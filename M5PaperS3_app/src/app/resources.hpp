@@ -26,7 +26,7 @@ namespace app
         font_info font_default;
         font_info font_menu;
 
-        resources() : font_default(&fonts::lgfxJapanGothic_16), font_menu(&fonts::DejaVu18)
+        resources() : font_default(&fonts::lgfxJapanGothic_16), font_menu(&fonts::DejaVu24)
         {
         }
     };

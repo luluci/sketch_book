@@ -31,8 +31,8 @@ namespace app::components
             // 線を引く
             // M5.Display.drawLine(x + 2, y + 2, x2 - 4, y2 - 4);
 
-            M5.Display.setCursor(x + 10, y + 10);
-            M5.Display.print("app base");
+            // M5.Display.setCursor(x + 10, y + 10);
+            // M5.Display.print("app base");
         }
     };
 }
