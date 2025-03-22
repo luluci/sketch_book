@@ -10,7 +10,9 @@ namespace app
         MenuPopup, // app側に表示する
 
         // app用ページ
-        AppMain, // メイン画面
+        AppMain,         // メイン画面
+        AppPowerManager, // 電源管理画面
+        AppTestEPDiy,    // EPDiyテスト
 
         MAX
     };

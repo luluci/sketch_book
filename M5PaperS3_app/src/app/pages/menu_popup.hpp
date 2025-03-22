@@ -2,7 +2,9 @@
 
 #include <lib_mini_appfx/page.hpp>
 
+#include "../components/panel.hpp"
 #include "../components/popup.hpp"
+#include "../components/menu_item.hpp"
 #include "../page_id.hpp"
 #include "../resources.hpp"
 
@@ -11,10 +13,12 @@ namespace app::pages
 
     enum class menu_popup_component_id
     {
-        Popup
+        Popup,
+        MenuPower,
+        MenuTestEPDiy,
     };
 
-    // ディスプレイ上部に配置するメニューバー
+    //
     class menu_popup : public lib_mini_appfx::page<page_id, menu_popup_component_id>
     {
         using id_type = page_id;
@@ -22,11 +26,29 @@ namespace app::pages
 
     public:
         using base_type = lib_mini_appfx::page<page_id, component_id>;
+        // components::panel<component_id> panel;
         components::popup<component_id> popup;
+        components::menu_item<component_id> menu_power;
+        components::menu_item<component_id> menu_test_epdiy;
+
+        using base_type::h;
+        using base_type::w;
+        using base_type::x;
+        using base_type::x2;
+        using base_type::y;
+        using base_type::y2;
+        static constexpr int32_t padding = components::popup<component_id>::padding + 2;
+        static constexpr int32_t menu_item_h = 80;
 
         menu_popup(id_type id_);
 
         virtual bool check_polling() override;
         virtual bool on_click(component_type *) override;
+
+        // 表示app変更通知
+        virtual void on_change_app(id_type new_app) override
+        {
+            // nothing
+        }
     };
 }

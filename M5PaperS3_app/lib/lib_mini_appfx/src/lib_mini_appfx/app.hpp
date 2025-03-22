@@ -35,6 +35,10 @@ namespace lib_mini_appfx
         using request_container_type = std::vector<request_type>;
         request_container_type request_queue;
 
+    private:
+        // 表示app変更あり
+        bool has_app_change_;
+
     public:
         bool is_build_ok;
 
@@ -87,10 +91,25 @@ namespace lib_mini_appfx
             // }
 
             // 初期表示ページを設定する
-            menu_page = pages[menu_id];
-
-            app_page = pages[app_id];
-            app_page_layer.push_back(app_page);
+            // menu
+            if (menu_id < id_type::MAX)
+            {
+                menu_page = pages[menu_id];
+            }
+            else
+            {
+                menu_page = nullptr;
+            }
+            // app
+            if (app_id < id_type::MAX)
+            {
+                app_page = pages[app_id];
+                app_page_layer.push_back(app_page);
+            }
+            else
+            {
+                app_page = nullptr;
+            }
 
             //
             refresh();
@@ -100,8 +119,14 @@ namespace lib_mini_appfx
         void refresh()
         {
             render_begin();
-            app_page->render(true, 0);
-            menu_page->render(true, 0);
+            if (app_page != nullptr)
+            {
+                app_page->render(true, 0);
+            }
+            if (menu_page != nullptr)
+            {
+                menu_page->render(true, 0);
+            }
             render_end();
         }
 
@@ -113,7 +138,6 @@ namespace lib_mini_appfx
             // check: menu
             if (check_click_impl(menu_page, x_, y_))
             {
-
                 return true;
             }
             // check: app
@@ -155,10 +179,18 @@ namespace lib_mini_appfx
 
         void exec_request()
         {
+            has_app_change_ = false;
+
             render_begin();
+            // pageからのリクエストを実行
             for (auto &req : request_queue)
             {
                 exec_request_impl(req);
+            }
+            // 表示app変更ありをmenuに通知する
+            if (has_app_change_)
+            {
+                menu_page->on_change_app(app_page->id);
             }
             render_end();
             request_queue.clear();
@@ -166,23 +198,42 @@ namespace lib_mini_appfx
         void exec_request_impl(request_type &req)
         {
             // 対象ページ取得
-            // failsafe
-            if (req.page_id >= pages.size())
-            {
-                return;
-            }
-            app_page = pages[req.page_id];
             // イベント処理
             switch (req.event)
             {
             case event::AppChange:
-                app_page_layer.pop_back();
-                app_page_layer.push_back(app_page);
-                app_page->render(true, req.data);
+            {
+                auto tgt_page = get_page(req.page_id);
+                if (tgt_page != nullptr)
+                {
+                    app_page = tgt_page;
+                    app_page_layer.pop_back();
+                    app_page_layer.push_back(app_page);
+                    app_page->render(true, req.data);
+                    has_app_change_ = true;
+                }
                 break;
+            }
             case event::AppPopup:
-                app_page_layer.push_back(app_page);
-                app_page->render(true, req.data);
+            {
+                auto tgt_page = get_page(req.page_id);
+                if (tgt_page != nullptr)
+                {
+                    app_page = tgt_page;
+                    app_page_layer.push_back(app_page);
+                    app_page->render(true, req.data);
+                    has_app_change_ = true;
+                }
+                break;
+            }
+            case event::AppClosePopup:
+                if (app_page_layer.size() > 1)
+                {
+                    app_page_layer.pop_back();
+                    app_page = app_page_layer.back();
+                    app_page->render(true, req.data);
+                    has_app_change_ = true;
+                }
                 break;
             case event::AppUpdate:
                 app_page->render(false, req.data);
@@ -194,7 +245,19 @@ namespace lib_mini_appfx
             }
         }
 
-        virtual void render_begin() = 0;
+        page_type *get_page(id_type page_id)
+        {
+            // 範囲チェック
+            if (page_id < pages.size())
+            {
+                return pages[page_id];
+            }
+            // 無効IDではnullptrを返す
+            return nullptr;
+        }
+
+        virtual void
+        render_begin() = 0;
         virtual void render_end() = 0;
     };
 }

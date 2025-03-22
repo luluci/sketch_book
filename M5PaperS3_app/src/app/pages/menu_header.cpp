@@ -7,17 +7,17 @@ namespace app::pages
 {
     menu_header::menu_header(id_type id_)
         : base_type::page(id_),
-          app(component_id::Base),
+          panel(component_id::Base),
           menu_button(component_id::Menu),
-          line(component_id::BorderLine)
+          line(component_id::BorderLine), is_show(false)
     {
         // メニューバー領域
         set_coord(0, 0, 540, 80);
 
         // メニューベース
-        add(app);
-        app.set_hit(false);
-        app.set_coord(0, 0, 540, 80);
+        add(panel);
+        panel.set_hit(false);
+        panel.set_coord(0, 0, 540, 80);
 
         // メニューボタン
         add(menu_button);
@@ -39,11 +39,36 @@ namespace app::pages
         if (component->id == menu_button.id)
         {
             // ボタン押下
-            // appとしてメニューを表示する
-            req_popup(page_id::MenuPopup, 0);
+            if (is_show)
+            {
+                // メニュー表示中
+                req_close_popup(0);
+            }
+            else
+            {
+                // メニュー非表示
+                // appとしてメニューを表示する
+                req_popup(page_id::MenuPopup, 0);
+            }
+            is_show = !is_show;
             return true;
         }
 
         return false;
+    }
+    void menu_header::on_change_app(id_type new_app)
+    {
+        // 表示appが変更された
+        // メニュー表示中
+        if (is_show)
+        {
+            // メニューが閉じられた
+            if (new_app != page_id::MenuPopup)
+            {
+                //
+            }
+        }
+
+        // base_type::render(true, 0);
     }
 }

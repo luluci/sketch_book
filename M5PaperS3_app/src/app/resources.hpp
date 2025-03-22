@@ -29,6 +29,11 @@ namespace app
         resources() : font_default(&fonts::lgfxJapanGothic_16), font_menu(&fonts::DejaVu24)
         {
         }
+
+        // void get_grayscale_color(uint8_t color){
+        //     lgfx::grayscale_t gs(color);
+        //     gs.get();
+        // }
     };
     extern resources resrc;
 }

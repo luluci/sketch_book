@@ -63,8 +63,9 @@ void setup()
     }
     catch (const std::runtime_error &e)
     {
-        M5.Lcd.printf("setup() exception occur!\n");
-        M5.Lcd.printf("msg: %s\n", e.what());
+        M5.Display.setCursor(0, 0);
+        M5.Display.printf("setup() exception occur!\n");
+        M5.Display.printf("msg: %s\n", e.what());
         while (true)
         {
             delay(10000);
@@ -88,8 +89,9 @@ void loop()
     }
     catch (const std::runtime_error &e)
     {
-        M5.Lcd.printf("loop() exception occur!\n");
-        M5.Lcd.printf("msg: %s\n", e.what());
+        M5.Display.setCursor(0, 0);
+        M5.Display.printf("loop() exception occur!\n");
+        M5.Display.printf("msg: %s\n", e.what());
         while (true)
         {
             delay(10000);

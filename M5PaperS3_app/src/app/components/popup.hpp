@@ -22,6 +22,8 @@ namespace app::components
         using base_type::y;
         using base_type::y2;
 
+        static constexpr int32_t padding = 2;
+
         popup(id_type id_) : base_type::component(id_) {}
 
         virtual void render() override
@@ -29,10 +31,10 @@ namespace app::components
             // 描画領域を塗りつぶし
             M5.Display.fillRect(x, y, w, h, TFT_WHITE);
             // 線を引く
-            M5.Display.drawRect(x + 2, y + 2, w - 4, h - 4, TFT_BLACK);
+            M5.Display.drawRect(x + padding, y + padding, w - (padding * 2), h - (padding * 2), TFT_BLACK);
 
-            M5.Display.setCursor(x + 10, y + 10);
-            M5.Display.print("popup");
+            // M5.Display.setCursor(x + 10, y + 10);
+            // M5.Display.print("popup");
         }
     };
 }

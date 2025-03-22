@@ -2,7 +2,7 @@
 
 #include <lib_mini_appfx/page.hpp>
 
-#include "../components/app.hpp"
+#include "../components/panel.hpp"
 #include "../components/button_label.hpp"
 #include "../components/line.hpp"
 #include "../page_id.hpp"
@@ -27,13 +27,17 @@ namespace app::pages
     public:
         using base_type = lib_mini_appfx::page<page_id, component_id>;
 
-        components::app<component_id> app;
+        components::panel<component_id> panel;
         components::button_label<component_id> menu_button;
         components::line<component_id> line;
+        bool is_show;
 
         menu_header(id_type id_);
 
         virtual bool check_polling() override;
         virtual bool on_click(component_type *) override;
+
+        // 表示app変更通知
+        virtual void on_change_app(id_type new_app) override;
     };
 }

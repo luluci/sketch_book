@@ -30,8 +30,10 @@ namespace lib_mini_appfx
         request_container_type *request_queue;
 
         //
+        void req(event ev, id_type id_, uint32_t data) { request_queue->emplace_back(ev, id_, data); }
         void req_change(id_type id_, uint32_t data) { request_queue->emplace_back(event::AppChange, id_, data); }
         void req_popup(id_type id_, uint32_t data) { request_queue->emplace_back(event::AppPopup, id_, data); }
+        void req_close_popup(uint32_t data) { request_queue->emplace_back(event::AppClosePopup, id_type::MAX, data); }
 
     public:
         page_base(id_type id_) : id(id_), request_queue(nullptr) {}
@@ -54,6 +56,9 @@ namespace lib_mini_appfx
 
         // ページ描画処理
         virtual void render(bool init, uint32_t data) = 0;
+
+        // 表示app変更通知
+        virtual void on_change_app(id_type new_app) = 0;
     };
 
     // pageベース
@@ -95,7 +100,7 @@ namespace lib_mini_appfx
             {
                 i--;
                 // 処理
-                auto &comp = components[i - 1];
+                auto &comp = components[i];
                 if (comp->hit_check(x_, y_))
                 {
                     return on_click(comp);

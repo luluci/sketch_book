@@ -10,6 +10,8 @@
 #include "pages/menu_header.hpp"
 #include "pages/menu_popup.hpp"
 #include "pages/app_main.hpp"
+#include "pages/app_power_manager.hpp"
+#include "pages/app_test_epdiy.hpp"
 
 namespace app
 {
@@ -26,6 +28,8 @@ namespace app
         pages::menu_popup menu_popup;
         // app
         pages::app_main app_main;
+        pages::app_power_manager app_power_manager;
+        pages::app_test_epdiy app_test_epdiy;
 
     public:
         using base_type = lib_mini_appfx::app<page_id>;

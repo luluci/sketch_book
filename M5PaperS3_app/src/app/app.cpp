@@ -7,7 +7,9 @@ namespace app
     app::app() : menu_header(page_id::MenuHeader),
                  menu_popup(page_id::MenuPopup),
                  app_main(page_id::AppMain),
-                 app::base_type(menu_header, menu_popup, app_main)
+                 app_power_manager(page_id::AppPowerManager),
+                 app_test_epdiy(page_id::AppTestEPDiy),
+                 app::base_type(menu_header, menu_popup, app_main, app_power_manager, app_test_epdiy)
     {
     }
 
@@ -19,7 +21,7 @@ namespace app
     size_t app::operator()()
     {
         // 開始時刻取得
-        size_t time_ms = (esp_timer_get_time() / 1000ULL);
+        int64_t time_us = esp_timer_get_time();
         M5.update();
 
         //
@@ -34,8 +36,17 @@ namespace app
         }
 
         // 処理時間を差し引いた時間をwaitして周期時間を可能な範囲で守る
-        size_t proced_time_ms = (esp_timer_get_time() / 1000ULL);
-        return (cycle_time_ms_ - (proced_time_ms - time_ms));
+        int64_t proced_time_ms = (esp_timer_get_time() - time_us) / 1000ULL;
+        size_t delay_time_ms;
+        if (cycle_time_ms_ > proced_time_ms)
+        {
+            delay_time_ms = cycle_time_ms_ - proced_time_ms;
+        }
+        else
+        {
+            delay_time_ms = 10;
+        }
+        return delay_time_ms;
     }
 
     bool app::check_event()

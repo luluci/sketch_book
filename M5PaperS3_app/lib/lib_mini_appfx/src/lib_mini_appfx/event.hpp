@@ -9,8 +9,9 @@ namespace lib_mini_appfx
         // ページ変更
         // menu
         // app
-        AppChange, // 指定のページに移動する, 直前に開いていたページを記憶せずに新しいページを開く
-        AppPopup,  // 指定のページを重ねて表示する, 直前に開いていたページに戻れるようにする
-        AppUpdate, // 表示更新要求
+        AppChange,     // 指定のページに移動する, 直前に開いていたページを記憶せずに新しいページを開く
+        AppPopup,      // 指定のページを重ねて表示する, 直前に開いていたページに戻れるようにする
+        AppClosePopup, // appを一つ閉じる
+        AppUpdate,     // 表示更新要求
     };
 }

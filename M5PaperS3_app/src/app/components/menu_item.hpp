@@ -11,7 +11,7 @@
 namespace app::components
 {
     template <typename Id>
-    class button_label : public lib_mini_appfx::component<Id>
+    class menu_item : public lib_mini_appfx::component<Id>
     {
         font_info const *font;
         char const *text;
@@ -39,7 +39,7 @@ namespace app::components
         using base_type::y;
         using base_type::y2;
 
-        button_label(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr) {}
+        menu_item(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr) {}
 
         void set_text(char const *text_)
         {
@@ -60,7 +60,8 @@ namespace app::components
 
             M5.Display.setFont(font->get());
             auto text_w = M5.Display.textWidth(text);
-            text_offset_x = (width() - text_w) / 2;
+            // text_offset_x = (width() - text_w) / 2;
+            text_offset_x = 50;
             text_offset_y = (height() - font->metrics.height - border_w - 1) / 2;
             //
             text_x = x + text_offset_x;
@@ -85,7 +86,7 @@ namespace app::components
             M5.Display.setTextWrap(false);
             // 下線を引く
             // M5.Display.drawFastHLine(x, y2, w);
-            // M5.Display.drawLine(x, y2 - border_w, x2, y2);
+            M5.Display.drawLine(x, y2, x2, y2);
             // テキスト描画
             M5.Display.setCursor(x + text_offset_x, y + text_offset_y);
             M5.Display.print(text);
