@@ -18,7 +18,7 @@ namespace app::pages
     {
         return false;
     }
-    bool app_power_manager::on_click(component_type *)
+    bool app_power_manager::on_touch_released(component_type *, int, int)
     {
         return false;
     }

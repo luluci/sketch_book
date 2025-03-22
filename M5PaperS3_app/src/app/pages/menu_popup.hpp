@@ -16,6 +16,7 @@ namespace app::pages
         Popup,
         MenuPower,
         MenuTestEPDiy,
+        MenuDrawCanvas,
     };
 
     //
@@ -30,6 +31,7 @@ namespace app::pages
         components::popup<component_id> popup;
         components::menu_item<component_id> menu_power;
         components::menu_item<component_id> menu_test_epdiy;
+        components::menu_item<component_id> menu_draw_canvas;
 
         using base_type::h;
         using base_type::w;
@@ -43,7 +45,7 @@ namespace app::pages
         menu_popup(id_type id_);
 
         virtual bool check_polling() override;
-        virtual bool on_click(component_type *) override;
+        virtual bool on_touch_released(component_type *, int, int) override;
 
         // 表示app変更通知
         virtual void on_change_app(id_type new_app) override

@@ -34,7 +34,7 @@ namespace app::pages
     {
         return false;
     }
-    bool menu_header::on_click(component_type *component)
+    bool menu_header::on_touch_released(component_type *component, int, int)
     {
         if (component->id == menu_button.id)
         {

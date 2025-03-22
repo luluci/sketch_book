@@ -4,6 +4,7 @@
 #include <M5Unified.h>
 // clang-format on
 
+#include <optional>
 #include <lib_mini_appfx/component.hpp>
 
 #include "../resources.hpp"
@@ -11,10 +12,12 @@
 namespace app::components
 {
     template <typename Id>
-    class button_label : public lib_mini_appfx::component<Id>
+    class button : public lib_mini_appfx::component<Id>
     {
         font_info const *font;
         char const *text;
+        lgfx::rgb565_t bkcolor;
+        std::optional<lgfx::rgb565_t> border_color;
 
         int text_offset_x;
         int text_offset_y;
@@ -39,7 +42,7 @@ namespace app::components
         using base_type::y;
         using base_type::y2;
 
-        button_label(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr) {}
+        button(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr), bkcolor(0xFFFF), border_color() {}
 
         void set_text(char const *text_)
         {
@@ -51,6 +54,15 @@ namespace app::components
             font = &font_;
             update();
         }
+        void set_bkcolor(lgfx::rgb565_t color)
+        {
+            bkcolor = color;
+        }
+        void set_border_color(lgfx::rgb565_t color)
+        {
+            border_color = color;
+        }
+
         void update()
         {
             if (font == nullptr || text == nullptr)
@@ -83,11 +95,17 @@ namespace app::components
             M5.Display.setTextSize(1);
             M5.Display.setTextColor(TFT_BLACK);
             M5.Display.setTextWrap(false);
+
+            // 描画領域を塗りつぶし
+            M5.Display.fillRect(x, y, w, h, bkcolor);
+            if (border_color)
+            {
+                M5.Display.drawLine(x, y, x2, y2, *border_color);
+            }
+
             // 下線を引く
             // M5.Display.drawFastHLine(x, y2, w);
             // M5.Display.drawLine(x, y2 - border_w, x2, y2);
-            // ボタン領域右端
-            M5.Display.drawLine(x2, y, x2, y2, TFT_BLACK);
             // テキスト描画
             M5.Display.setCursor(x + text_offset_x, y + text_offset_y);
             M5.Display.print(text);

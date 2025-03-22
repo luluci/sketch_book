@@ -3,6 +3,8 @@
 #include <lib_mini_appfx/page.hpp>
 
 #include "../components/test.hpp"
+#include "../components/panel.hpp"
+#include "../components/button.hpp"
 #include "../page_id.hpp"
 #include "../resources.hpp"
 
@@ -11,7 +13,11 @@ namespace app::pages
 
     enum class app_test_epdiy_component_id
     {
-        Panel
+        TestDispPanel,
+        NavigatorPanel,
+        PrevButton,
+        NextButton,
+        PageText,
     };
 
     //
@@ -22,12 +28,15 @@ namespace app::pages
 
     public:
         using base_type = lib_mini_appfx::page<page_id, component_id>;
-        components::panel_test<component_id> panel;
+        components::panel_test<component_id> test_disp_panel;
+        components::panel<component_id> navi_panel;
+        components::button<component_id> prev_button;
+        components::button<component_id> next_button;
 
         app_test_epdiy(id_type id_);
 
         virtual bool check_polling() override;
-        virtual bool on_click(component_type *) override;
+        virtual bool on_touch_released(component_type *, int, int) override;
 
         // 表示app変更通知
         virtual void on_change_app(id_type new_app) override

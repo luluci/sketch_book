@@ -52,7 +52,7 @@ namespace lib_mini_appfx
         // 周期処理判定
         virtual bool check_polling() = 0;
         // ページタッチ判定
-        virtual bool check_click(int x_, int y_) = 0;
+        virtual bool check_touch_released(int x_, int y_) = 0;
 
         // ページ描画処理
         virtual void render(bool init, uint32_t data) = 0;
@@ -82,7 +82,7 @@ namespace lib_mini_appfx
             components.push_back(&component);
         }
 
-        virtual bool check_click(int x_, int y_) override
+        virtual bool check_touch_released(int x_, int y_) override
         {
             // for (int i = 0; i < components.size(); i++)
             // {
@@ -103,13 +103,13 @@ namespace lib_mini_appfx
                 auto &comp = components[i];
                 if (comp->hit_check(x_, y_))
                 {
-                    return on_click(comp);
+                    return on_touch_released(comp, x_, y_);
                 }
             } while (i > 0);
 
             return false;
         }
-        virtual bool on_click(component_type *) = 0;
+        virtual bool on_touch_released(component_type *component, int x_, int y_) = 0;
 
         virtual void render(bool init, uint32_t data) override
         {

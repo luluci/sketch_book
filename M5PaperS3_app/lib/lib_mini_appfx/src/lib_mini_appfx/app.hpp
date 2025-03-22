@@ -131,28 +131,28 @@ namespace lib_mini_appfx
         }
 
         // ページタッチ判定
-        bool check_click(int x_, int y_)
+        bool check_touch_released(int x_, int y_)
         {
             // 表示中の要素に対してタッチ判定を実施する
             // 優先度の高い順にチェックしてマッチした時点で終了する
             // check: menu
-            if (check_click_impl(menu_page, x_, y_))
+            if (check_touch_released_impl(menu_page, x_, y_))
             {
                 return true;
             }
             // check: app
-            if (check_click_impl(app_page, x_, y_))
+            if (check_touch_released_impl(app_page, x_, y_))
             {
                 return true;
             }
 
             return false;
         }
-        bool check_click_impl(page_type *page, int x_, int y_)
+        bool check_touch_released_impl(page_type *page, int x_, int y_)
         {
             if (page != nullptr)
             {
-                if (page->check_click(x_, y_))
+                if (page->check_touch_released(x_, y_))
                 {
                     exec_request();
                     return true;

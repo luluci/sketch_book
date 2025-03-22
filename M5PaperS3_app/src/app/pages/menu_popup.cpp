@@ -9,7 +9,8 @@ namespace app::pages
         : base_type::page(id_),
           popup(component_id::Popup),
           menu_power(component_id::MenuPower),
-          menu_test_epdiy(component_id::MenuTestEPDiy)
+          menu_test_epdiy(component_id::MenuTestEPDiy),
+          menu_draw_canvas(component_id::MenuDrawCanvas)
     {
         // ポップアップ領域
         set_coord(0, 80, 440, 700);
@@ -32,12 +33,18 @@ namespace app::pages
         menu_test_epdiy.set_text("test EPDiy");
         menu_test_epdiy.set_font(resrc.font_menu);
         menu_count++;
+        //
+        add(menu_draw_canvas);
+        menu_draw_canvas.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
+        menu_draw_canvas.set_text("Draw Canvas");
+        menu_draw_canvas.set_font(resrc.font_menu);
+        menu_count++;
     }
     bool menu_popup::check_polling()
     {
         return false;
     }
-    bool menu_popup::on_click(component_type *component)
+    bool menu_popup::on_touch_released(component_type *component, int, int)
     {
         if (component->id == menu_power.id)
         {
@@ -47,6 +54,13 @@ namespace app::pages
             // appとしてを表示する
             req_close_popup(0);
             req_change(page_id::AppTestEPDiy, 0);
+            return true;
+        }
+        if (component->id == menu_draw_canvas.id)
+        {
+            // appとしてを表示する
+            req_close_popup(0);
+            req_change(page_id::AppDrawCanvas, 0);
             return true;
         }
 

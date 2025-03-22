@@ -46,7 +46,7 @@ namespace app::components
             constexpr int offset_x = 10;
             constexpr int offset_y = 90;
             constexpr int size_w = 250;
-            constexpr int size_h = 50;
+            constexpr int size_h = 40;
             lgfx::color_conv_t cconv(lgfx::color_depth_t::grayscale_8bit);
             uint32_t gs_color;
             // lgfx::grayscale_t gs;

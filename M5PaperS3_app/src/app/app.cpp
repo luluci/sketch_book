@@ -73,7 +73,7 @@ namespace app
         // }
         if (touch.wasReleased())
         {
-            check_click(touch.x, touch.y);
+            check_touch_released(touch.x, touch.y);
             return true;
         }
 
