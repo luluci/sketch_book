@@ -29,12 +29,12 @@ namespace app::pages
         prev_button.set_coord(20, 870, 120, 80);
         prev_button.set_text("<<Prev");
         prev_button.set_font(resrc.font_menu);
-        prev_button.set_bkcolor(resrc.grayscale_4);
+        prev_button.set_bkcolor(resrc.grayscale_13);
         add(next_button);
         next_button.set_coord(540 - 120 - 20, 870, 120, 80);
         next_button.set_text("Next>>");
         next_button.set_font(resrc.font_menu);
-        next_button.set_bkcolor(resrc.grayscale_4);
+        next_button.set_bkcolor(resrc.grayscale_13);
     }
     bool app_test_epdiy::check_polling()
     {

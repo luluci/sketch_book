@@ -12,13 +12,16 @@
 #include "pages/app_main.hpp"
 #include "pages/app_power_manager.hpp"
 #include "pages/app_test_epdiy.hpp"
+#include "pages/app_touch_draw.hpp"
+#include "pages/app_ble.hpp"
 
 namespace app
 {
 
     class app : public lib_mini_appfx::app<page_id>
     {
-        size_t cycle_time_ms_ = 100;
+        // app周期処理間隔(ms)
+        uint32_t cycle_time_ms_ = 100;
 
         // canvas使う？
         // 5Canvas canvas;
@@ -30,6 +33,8 @@ namespace app
         pages::app_main app_main;
         pages::app_power_manager app_power_manager;
         pages::app_test_epdiy app_test_epdiy;
+        pages::app_touch_draw app_touch_draw;
+        pages::app_ble app_ble;
 
     public:
         using base_type = lib_mini_appfx::app<page_id>;
@@ -39,7 +44,7 @@ namespace app
 
         void init();
 
-        size_t operator()();
+        uint32_t operator()();
 
     private:
         bool check_event();
@@ -47,6 +52,8 @@ namespace app
 
         virtual void render_begin() override;
         virtual void render_end() override;
+        // 表示app変更通知
+        virtual void on_change_app(id_type new_app) override;
     };
 }
 

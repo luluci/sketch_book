@@ -52,13 +52,12 @@ namespace lib_mini_appfx
         // 周期処理判定
         virtual bool check_polling() = 0;
         // ページタッチ判定
+        virtual bool check_touch_pressed(int x_, int y_) = 0;
+        virtual bool check_touch_dragging(int x_, int y_, int delta_x_, int delta_y_) = 0;
         virtual bool check_touch_released(int x_, int y_) = 0;
 
         // ページ描画処理
         virtual void render(bool init, uint32_t data) = 0;
-
-        // 表示app変更通知
-        virtual void on_change_app(id_type new_app) = 0;
     };
 
     // pageベース
@@ -81,6 +80,46 @@ namespace lib_mini_appfx
         {
             components.push_back(&component);
         }
+
+        virtual bool check_touch_pressed(int x_, int y_) override
+        {
+            // 描画は0開始で上書きしていく
+            // 判定チェックは逆順
+            int i = components.size();
+            do
+            {
+                i--;
+                // 処理
+                auto &comp = components[i];
+                if (comp->hit_check(x_, y_))
+                {
+                    return on_touch_pressed(comp, x_, y_);
+                }
+            } while (i > 0);
+
+            return false;
+        }
+        virtual bool on_touch_pressed(component_type *component, int x_, int y_) = 0;
+
+        bool check_touch_dragging(int x_, int y_, int delta_x_, int delta_y_)
+        {
+            // 描画は0開始で上書きしていく
+            // 判定チェックは逆順
+            int i = components.size();
+            do
+            {
+                i--;
+                // 処理
+                auto &comp = components[i];
+                if (comp->hit_check(x_, y_))
+                {
+                    return on_touch_dragging(comp, x_, y_, delta_x_, delta_y_);
+                }
+            } while (i > 0);
+
+            return false;
+        }
+        virtual bool on_touch_dragging(component_type *component, int x_, int y_, int delta_x_, int delta_y_) = 0;
 
         virtual bool check_touch_released(int x_, int y_) override
         {

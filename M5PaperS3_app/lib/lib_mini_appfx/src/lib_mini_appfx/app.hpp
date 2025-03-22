@@ -131,7 +131,73 @@ namespace lib_mini_appfx
         }
 
         // ページタッチ判定
-        bool check_touch_released(int x_, int y_)
+        // release -> press と変化した
+        bool check_touch_pressed(int x_, int y_)
+        {
+            // 表示中の要素に対してタッチ判定を実施する
+            // 優先度の高い順にチェックしてマッチした時点で終了する
+            // check: menu
+            if (check_touch_pressed_impl(menu_page, x_, y_))
+            {
+                return true;
+            }
+            // check: app
+            if (check_touch_pressed_impl(app_page, x_, y_))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        bool check_touch_pressed_impl(page_type *page, int x_, int y_)
+        {
+            if (page != nullptr)
+            {
+                if (page->check_touch_pressed(x_, y_))
+                {
+                    exec_request();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ページタッチ判定
+        // pressを継続している
+        bool check_touch_dragging(int x_, int y_, int delta_x_, int delta_y_)
+        {
+            // 表示中の要素に対してタッチ判定を実施する
+            // 優先度の高い順にチェックしてマッチした時点で終了する
+            // check: menu
+            if (check_touch_dragging_impl(menu_page, x_, y_, delta_x_, delta_y_))
+            {
+                return true;
+            }
+            // check: app
+            if (check_touch_dragging_impl(app_page, x_, y_, delta_x_, delta_y_))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        bool check_touch_dragging_impl(page_type *page, int x_, int y_, int delta_x_, int delta_y_)
+        {
+            if (page != nullptr)
+            {
+                if (page->check_touch_dragging(x_, y_, delta_x_, delta_y_))
+                {
+                    exec_request();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ページタッチ判定
+        // press -> release と変化した
+        bool
+        check_touch_released(int x_, int y_)
         {
             // 表示中の要素に対してタッチ判定を実施する
             // 優先度の高い順にチェックしてマッチした時点で終了する
@@ -179,21 +245,24 @@ namespace lib_mini_appfx
 
         void exec_request()
         {
-            has_app_change_ = false;
+            if (request_queue.size() > 0)
+            {
+                has_app_change_ = false;
 
-            render_begin();
-            // pageからのリクエストを実行
-            for (auto &req : request_queue)
-            {
-                exec_request_impl(req);
+                render_begin();
+                // pageからのリクエストを実行
+                for (auto &req : request_queue)
+                {
+                    exec_request_impl(req);
+                }
+                // 表示app変更ありをmenuに通知する
+                if (has_app_change_)
+                {
+                    on_change_app(app_page->id);
+                }
+                render_end();
+                request_queue.clear();
             }
-            // 表示app変更ありをmenuに通知する
-            if (has_app_change_)
-            {
-                menu_page->on_change_app(app_page->id);
-            }
-            render_end();
-            request_queue.clear();
         }
         void exec_request_impl(request_type &req)
         {
@@ -256,8 +325,9 @@ namespace lib_mini_appfx
             return nullptr;
         }
 
-        virtual void
-        render_begin() = 0;
+        virtual void render_begin() = 0;
         virtual void render_end() = 0;
+        // 表示app変更通知
+        virtual void on_change_app(id_type new_app) = 0;
     };
 }

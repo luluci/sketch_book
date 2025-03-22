@@ -47,23 +47,23 @@ namespace app
 
         resources() : font_default(&fonts::lgfxJapanGothic_16), font_menu(&fonts::DejaVu24)
         {
-            grayscale_0.set(0x00, 0x00, 0x00);
-            grayscale_1.set(0x00, 0x00, 0x12);
-            grayscale_2.set(0x00, 0x02, 0x1E);
-            grayscale_3.set(0x00, 0x08, 0x1F);
-            grayscale_4.set(0x00, 0x0F, 0x1F);
-            grayscale_5.set(0x00, 0x16, 0x1E);
-            grayscale_6.set(0x00, 0x1D, 0x1D);
-            grayscale_7.set(0x00, 0x23, 0x1F);
-            grayscale_8.set(0x00, 0x2A, 0x1F);
-            grayscale_9.set(0x00, 0x31, 0x1E);
-            grayscale_10.set(0x00, 0x38, 0x1D);
-            grayscale_11.set(0x00, 0x3E, 0x1F);
-            grayscale_12.set(0x06, 0x3F, 0x1E);
-            grayscale_13.set(0x0C, 0x3F, 0x1F);
-            grayscale_14.set(0x13, 0x3F, 0x1E);
-            grayscale_15.set(0x19, 0x3F, 0x1F);
-            grayscale_16.set(0x1F, 0x3F, 0x1F);
+            grayscale_0.set((0x00 << 11) | (0x00 << 5) | 0x00);
+            grayscale_1.set((0x00 << 11) | (0x00 << 5) | 0x12);
+            grayscale_2.set((0x00 << 11) | (0x02 << 5) | 0x1E);
+            grayscale_3.set((0x00 << 11) | (0x08 << 5) | 0x1F);
+            grayscale_4.set((0x00 << 11) | (0x0F << 5) | 0x1F);
+            grayscale_5.set((0x00 << 11) | (0x16 << 5) | 0x1E);
+            grayscale_6.set((0x00 << 11) | (0x1D << 5) | 0x1D);
+            grayscale_7.set((0x00 << 11) | (0x23 << 5) | 0x1F);
+            grayscale_8.set((0x00 << 11) | (0x2A << 5) | 0x1F);
+            grayscale_9.set((0x00 << 11) | (0x31 << 5) | 0x1E);
+            grayscale_10.set((0x00 << 11) | (0x38 << 5) | 0x1D);
+            grayscale_11.set((0x00 << 11) | (0x3E << 5) | 0x1F);
+            grayscale_12.set((0x06 << 11) | (0x3F << 5) | 0x1E);
+            grayscale_13.set((0x0C << 11) | (0x3F << 5) | 0x1F);
+            grayscale_14.set((0x13 << 11) | (0x3F << 5) | 0x1E);
+            grayscale_15.set((0x19 << 11) | (0x3F << 5) | 0x1F);
+            grayscale_16.set((0x1F << 11) | (0x3F << 5) | 0x1F);
         }
 
         // void get_grayscale_color(uint8_t color){

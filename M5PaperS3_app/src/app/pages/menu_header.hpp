@@ -35,9 +35,11 @@ namespace app::pages
         menu_header(id_type id_);
 
         virtual bool check_polling() override;
+        virtual bool on_touch_pressed(component_type *, int, int) { return false; }
+        virtual bool on_touch_dragging(component_type *, int, int, int, int) { return false; }
         virtual bool on_touch_released(component_type *, int, int) override;
 
         // 表示app変更通知
-        virtual void on_change_app(id_type new_app) override;
+        void on_change_app(id_type new_app);
     };
 }
