@@ -12,6 +12,7 @@ namespace app::pages
 
         //
         add(panel);
+        panel.set_hit(false);
         panel.set_coord(0, 80, 540, 880);
     }
     bool app_power_manager::check_polling()

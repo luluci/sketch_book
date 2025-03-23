@@ -15,6 +15,8 @@ namespace app::pages
     {
         Popup,
         MenuPower,
+        MenuSettings,
+        MenuBLE,
         MenuTestEPDiy,
         MenuDrawCanvas,
     };
@@ -30,6 +32,8 @@ namespace app::pages
         // components::panel<component_id> panel;
         components::popup<component_id> popup;
         components::menu_item<component_id> menu_power;
+        components::menu_item<component_id> menu_settings;
+        components::menu_item<component_id> menu_ble;
         components::menu_item<component_id> menu_test_epdiy;
         components::menu_item<component_id> menu_draw_canvas;
 

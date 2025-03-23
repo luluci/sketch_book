@@ -9,6 +9,8 @@ namespace app::pages
         : base_type::page(id_),
           popup(component_id::Popup),
           menu_power(component_id::MenuPower),
+          menu_settings(component_id::MenuSettings),
+          menu_ble(component_id::MenuBLE),
           menu_test_epdiy(component_id::MenuTestEPDiy),
           menu_draw_canvas(component_id::MenuDrawCanvas)
     {
@@ -17,23 +19,35 @@ namespace app::pages
 
         // メニュー領域
         add(popup);
-        popup.set_coord(x, y, w, h);
         popup.set_hit(false);
+        popup.set_coord(x, y, w, h);
         // メニューアイテム
         int menu_count = 0;
-        //
+        // 電源app表示
         add(menu_power);
         menu_power.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
         menu_power.set_text("Power Manager");
         menu_power.set_font(resrc.font_menu);
         menu_count++;
-        //
+        // Settings app表示
+        add(menu_settings);
+        menu_settings.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
+        menu_settings.set_text("Settings");
+        menu_settings.set_font(resrc.font_menu);
+        menu_count++;
+        // Settings app表示
+        add(menu_ble);
+        menu_ble.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
+        menu_ble.set_text("BLE");
+        menu_ble.set_font(resrc.font_menu);
+        menu_count++;
+        // EPDiy テストapp
         add(menu_test_epdiy);
         menu_test_epdiy.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
         menu_test_epdiy.set_text("test EPDiy");
         menu_test_epdiy.set_font(resrc.font_menu);
         menu_count++;
-        //
+        // お絵描きapp
         add(menu_draw_canvas);
         menu_draw_canvas.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
         menu_draw_canvas.set_text("Draw Canvas");
@@ -48,6 +62,13 @@ namespace app::pages
     {
         if (component->id == menu_power.id)
         {
+        }
+        if (component->id == menu_ble.id)
+        {
+            // appとしてを表示する
+            req_close_popup(0);
+            req_change(page_id::AppBLE, 0);
+            return true;
         }
         if (component->id == menu_test_epdiy.id)
         {

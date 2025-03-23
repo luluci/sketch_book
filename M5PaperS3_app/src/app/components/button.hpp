@@ -18,6 +18,7 @@ namespace app::components
         char const *text;
         lgfx::rgb565_t bkcolor;
         std::optional<lgfx::rgb565_t> border_color;
+        std::optional<int32_t> round;
 
         int text_offset_x;
         int text_offset_y;
@@ -42,7 +43,15 @@ namespace app::components
         using base_type::y;
         using base_type::y2;
 
-        button(id_type id_) : base_type::component(id_), font(nullptr), text(nullptr), bkcolor(0xFFFF), border_color() {}
+        button(id_type id_)
+            : base_type::component(id_),
+              font(nullptr),
+              text(nullptr),
+              bkcolor(0xFFFF),
+              border_color(),
+              round()
+        {
+        }
 
         void set_text(char const *text_)
         {
@@ -61,6 +70,10 @@ namespace app::components
         void set_border_color(lgfx::rgb565_t color)
         {
             border_color = color;
+        }
+        void set_round(int32_t r)
+        {
+            round = r;
         }
 
         void update()
@@ -97,10 +110,21 @@ namespace app::components
             M5.Display.setTextWrap(false);
 
             // 描画領域を塗りつぶし
-            M5.Display.fillRect(x, y, w, h, bkcolor);
-            if (border_color)
+            if (round)
             {
-                M5.Display.drawRect(x, y, x2, y2, *border_color);
+                M5.Display.fillRoundRect(x, y, w, h, *round, bkcolor);
+                if (border_color)
+                {
+                    M5.Display.drawRoundRect(x, y, x2, y2, *round, *border_color);
+                }
+            }
+            else
+            {
+                M5.Display.fillRect(x, y, w, h, bkcolor);
+                if (border_color)
+                {
+                    M5.Display.drawRect(x, y, x2, y2, *border_color);
+                }
             }
 
             // 下線を引く

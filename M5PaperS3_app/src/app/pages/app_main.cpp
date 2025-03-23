@@ -12,6 +12,7 @@ namespace app::pages
 
         //
         add(panel);
+        panel.set_hit(false);
         panel.set_coord(x, y, w, h);
     }
     bool app_main::check_polling()
