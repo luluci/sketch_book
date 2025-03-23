@@ -1,4 +1,5 @@
 #include "app.hpp"
+#include "ble_paper_s3.hpp"
 
 app::app m5app;
 
@@ -25,6 +26,8 @@ namespace app
         // 開始時刻取得
         int64_t time_us = esp_timer_get_time();
         M5.update();
+        // app外ドライバ処理
+        ble_data_trans.polling(cycle_time_ms_);
 
         //
         if (check_event())

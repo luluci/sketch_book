@@ -13,12 +13,21 @@ namespace app::components
 {
     class label_base
     {
+    public:
+        enum class text_alignment
+        {
+            Center,
+            Left,
+        };
+
+    private:
         font_info const *font;
         char const *text;
         bool underline;
         lgfx::rgb565_t bkcolor;
         std::optional<lgfx::rgb565_t> border_color;
         std::optional<int32_t> round;
+        text_alignment text_align;
 
         // label表示サイズ
         int32_t x;
@@ -48,6 +57,7 @@ namespace app::components
               bkcolor(0xFFFF),
               border_color(),
               round(),
+              text_align(text_alignment::Center),
               x(0), y(0), w(0), h(0),
               text_underline_h(1)
         {
@@ -63,6 +73,11 @@ namespace app::components
             y2 = y_ + h_ - 1;
         }
 
+        void set_align(text_alignment align)
+        {
+            text_align = align;
+            update();
+        }
         void set_text(char const *text_)
         {
             text = text_;
@@ -99,7 +114,19 @@ namespace app::components
 
             M5.Display.setFont(font->get());
             auto text_w = M5.Display.textWidth(text);
-            text_offset_x = (w - text_w) / 2;
+
+            // alignment
+            switch (text_align)
+            {
+            case text_alignment::Center:
+                text_offset_x = (w - text_w) / 2;
+                break;
+
+            case text_alignment::Left:
+            default:
+                text_offset_x = 0;
+                break;
+            }
             // text_offset_y = (h - font->metrics.height - text_underline_h - (text_underline_offset_y - 1)) / 2;
             text_offset_y = (h - font->metrics.height) / 2;
             //
@@ -146,7 +173,7 @@ namespace app::components
             // M5.Display.drawFastHLine(x, y2, w);
             // M5.Display.drawLine(x, y2 - border_w, x2, y2);
             // テキスト描画
-            M5.Display.setCursor(x + text_offset_x, y + text_offset_y);
+            M5.Display.setCursor(text_x, text_y);
             M5.Display.print(text);
             // テキスト下線
             if (underline)
@@ -171,6 +198,8 @@ namespace app::components
         using base_type::x2;
         using base_type::y;
         using base_type::y2;
+
+        using text_alignment = label_base::text_alignment;
 
         label(id_type id_)
             : base_type::component(id_),

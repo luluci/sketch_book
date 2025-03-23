@@ -44,8 +44,7 @@ namespace ble
             return pass_key_;
         }
 
-        bool
-        is_connected()
+        bool is_connected()
         {
             return state_ == server_state::Connected;
         }

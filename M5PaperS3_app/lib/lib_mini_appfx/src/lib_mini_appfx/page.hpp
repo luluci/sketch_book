@@ -23,6 +23,8 @@ namespace lib_mini_appfx
         int h;
         int x2; // 終点:X座標
         int y2; // 終点:Y座標
+        // active状態
+        bool is_active;
 
         // pageからappへのリクエストキューポインタ, インスタンスはappが管理
         using request_type = page_request<Id>;
@@ -36,7 +38,7 @@ namespace lib_mini_appfx
         void req_close_popup(uint32_t data) { request_queue->emplace_back(event::AppClosePopup, id_type::MAX, data); }
 
     public:
-        page_base(id_type id_) : id(id_), request_queue(nullptr) {}
+        page_base(id_type id_) : id(id_), is_active(false), request_queue(nullptr) {}
 
         void set_request_queue(request_container_type *q) { request_queue = q; }
         void set_coord(int x_, int y_, int w_, int h_)

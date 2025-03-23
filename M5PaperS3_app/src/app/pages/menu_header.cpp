@@ -22,6 +22,7 @@ namespace app::pages
         // メニューボタン
         add(menu_button);
         menu_button.set_coord(0, 0, 130, 80 - 10);
+        menu_button.set_underline(true);
         menu_button.set_text("MENU");
         menu_button.set_font(resrc.font_menu);
 

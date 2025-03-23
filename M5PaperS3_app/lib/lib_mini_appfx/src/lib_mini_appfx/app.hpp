@@ -95,6 +95,7 @@ namespace lib_mini_appfx
             if (menu_id < id_type::MAX)
             {
                 menu_page = pages[menu_id];
+                menu_page->is_active = true;
             }
             else
             {
@@ -105,6 +106,7 @@ namespace lib_mini_appfx
             {
                 app_page = pages[app_id];
                 app_page_layer.push_back(app_page);
+                app_page->is_active = true;
             }
             else
             {
@@ -196,8 +198,7 @@ namespace lib_mini_appfx
 
         // ページタッチ判定
         // press -> release と変化した
-        bool
-        check_touch_released(int x_, int y_)
+        bool check_touch_released(int x_, int y_)
         {
             // 表示中の要素に対してタッチ判定を実施する
             // 優先度の高い順にチェックしてマッチした時点で終了する
@@ -229,8 +230,11 @@ namespace lib_mini_appfx
 
         void polling()
         {
-            check_polling(menu_page);
-            check_polling(app_page);
+            for (size_t i = 0; i < pages.size(); i++)
+            {
+                auto &page = pages[i];
+                check_polling(page);
+            }
         }
         void check_polling(page_type *page)
         {
@@ -275,8 +279,12 @@ namespace lib_mini_appfx
                 auto tgt_page = get_page(req.page_id);
                 if (tgt_page != nullptr)
                 {
-                    app_page = tgt_page;
+                    // 現在表示中appを外す
+                    app_page->is_active = false;
                     app_page_layer.pop_back();
+                    // 新しいappを有効化
+                    app_page = tgt_page;
+                    app_page->is_active = true;
                     app_page_layer.push_back(app_page);
                     app_page->render(true, req.data);
                     has_app_change_ = true;
@@ -288,7 +296,11 @@ namespace lib_mini_appfx
                 auto tgt_page = get_page(req.page_id);
                 if (tgt_page != nullptr)
                 {
+                    // 現在表示中appを無効化
+                    app_page->is_active = false;
+                    // 新しいappを有効化
                     app_page = tgt_page;
+                    app_page->is_active = true;
                     app_page_layer.push_back(app_page);
                     app_page->render(true, req.data);
                     has_app_change_ = true;
@@ -298,8 +310,12 @@ namespace lib_mini_appfx
             case event::AppClosePopup:
                 if (app_page_layer.size() > 1)
                 {
+                    // 現在表示中appを外す
+                    app_page->is_active = false;
                     app_page_layer.pop_back();
+                    // 新しいappを有効化
                     app_page = app_page_layer.back();
+                    app_page->is_active = true;
                     app_page->render(true, req.data);
                     has_app_change_ = true;
                 }
