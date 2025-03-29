@@ -4,6 +4,8 @@
 #include <M5Unified.h>
 // clang-format on
 
+#include "./fonts/fonts.hpp"
+
 namespace app
 {
     struct font_info
@@ -25,6 +27,7 @@ namespace app
     {
         font_info font_default;
         font_info font_menu;
+        font_info font_signage;
 
         // grayscale color
         lgfx::rgb565_t grayscale_0;  // black
@@ -45,7 +48,7 @@ namespace app
         lgfx::rgb565_t grayscale_15; //
         lgfx::rgb565_t grayscale_16; // white
 
-        resources() : font_default(&fonts::lgfxJapanGothic_16), font_menu(&fonts::DejaVu24)
+        resources() : font_default(&lgfx::fonts::lgfxJapanGothic_16), font_menu(&lgfx::fonts::DejaVu24), font_signage(&fonts::font_UDGothic_40)
         {
             grayscale_0.set((0x00 << 11) | (0x00 << 5) | 0x00);
             grayscale_1.set((0x00 << 11) | (0x00 << 5) | 0x12);

@@ -157,7 +157,7 @@ namespace app::components
                 M5.Display.fillRoundRect(x, y, w, h, *round, bkcolor);
                 if (border_color)
                 {
-                    M5.Display.drawRoundRect(x, y, x + w - 1, y + h - 1, *round, *border_color);
+                    M5.Display.drawRoundRect(x, y, w, h, *round, *border_color);
                 }
             }
             else
@@ -165,7 +165,7 @@ namespace app::components
                 M5.Display.fillRect(x, y, w, h, bkcolor);
                 if (border_color)
                 {
-                    M5.Display.drawRect(x, y, x + w - 1, y + h - 1, *border_color);
+                    M5.Display.drawRect(x, y, w, h, *border_color);
                 }
             }
 

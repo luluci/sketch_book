@@ -45,21 +45,24 @@ namespace app::pages
         // BLE Server動作停止 ボタン
         add(ble_server_stop);
         ble_server_stop.set_hit(true);
-        ble_server_stop.set_underline(true);
-        ble_server_stop.set_bkcolor(resrc.grayscale_13);
+        ble_server_stop.set_underline(false);
+        ble_server_stop.set_bkcolor(resrc.grayscale_10);
         ble_server_stop.set_border_color(resrc.grayscale_0);
         ble_server_stop.set_round(10);
         ble_server_stop.set_coord(x + 280, y + 60, 240, 70);
         ble_server_stop.set_text("BLE Stop");
         ble_server_stop.set_font(resrc.font_menu);
 
-        // BLE接続状態
+        // Advertising状態
+        // 接続状態
         add(ble_connect_status);
         ble_connect_status.set_hit(true);
         ble_connect_status.set_coord(x + 20, y + 140, 320, 70);
         ble_connect_status.set_align(label_t::text_alignment::Left);
         ble_connect_status.set_text(ble_status_label[(size_t)status]);
         ble_connect_status.set_font(resrc.font_menu);
+
+        // data_trans状態
     }
     bool app_ble::check_polling()
     {
