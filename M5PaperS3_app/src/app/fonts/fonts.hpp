@@ -4,5 +4,6 @@
 
 namespace app::fonts
 {
+    extern const lgfx::U8g2font font_UDGothic_36;
     extern const lgfx::U8g2font font_UDGothic_40;
 }

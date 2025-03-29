@@ -57,8 +57,8 @@ namespace app::pages
         // 動的サイネージapp
         add(menu_dynamic_signage);
         menu_dynamic_signage.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
-        menu_dynamic_signage.set_text("Signage");
-        menu_dynamic_signage.set_font(resrc.font_menu);
+        menu_dynamic_signage.set_text("サイネージ");
+        menu_dynamic_signage.set_font(resrc.font_menu_jp);
         menu_count++;
     }
     bool menu_popup::check_polling()

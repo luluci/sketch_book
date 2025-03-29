@@ -27,6 +27,7 @@ namespace app
     {
         font_info font_default;
         font_info font_menu;
+        font_info font_menu_jp;
         font_info font_signage;
 
         // grayscale color
@@ -48,7 +49,7 @@ namespace app
         lgfx::rgb565_t grayscale_15; //
         lgfx::rgb565_t grayscale_16; // white
 
-        resources() : font_default(&lgfx::fonts::lgfxJapanGothic_16), font_menu(&lgfx::fonts::DejaVu24), font_signage(&fonts::font_UDGothic_40)
+        resources() : font_default(&lgfx::fonts::lgfxJapanGothic_16), font_menu(&lgfx::fonts::DejaVu24), font_menu_jp(&fonts::font_UDGothic_36), font_signage(&fonts::font_UDGothic_40)
         {
             grayscale_0.set((0x00 << 11) | (0x00 << 5) | 0x00);
             grayscale_1.set((0x00 << 11) | (0x00 << 5) | 0x12);

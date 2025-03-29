@@ -13,7 +13,7 @@ namespace app::pages
           label_name(component_id::LabelName)
     {
         // app領域
-        set_coord(80, 0, 880, 540);
+        set_coord(0, 0, 880, 540);
 
         //
         add(panel);
@@ -24,13 +24,15 @@ namespace app::pages
         add(label_dest);
         label_dest.set_coord(x, y, w, 270);
         label_dest.set_font(resrc.font_signage);
+        label_dest.set_text_size(3);
         label_dest.set_align(components::label_base::text_alignment::Center);
         label_dest.set_bkcolor(resrc.grayscale_14);
-        label_dest.set_text("行き先表示");
+        label_dest.set_text("付加情報表示");
         // 部署名表示
         add(label_depart);
         label_depart.set_coord(x, y + 270, 300, 270);
         label_depart.set_font(resrc.font_signage);
+        label_depart.set_text_size(2);
         label_depart.set_align(components::label_base::text_alignment::Center);
         label_depart.set_bkcolor(resrc.grayscale_16);
         label_depart.set_text("部署名表示");
@@ -38,6 +40,7 @@ namespace app::pages
         add(label_name);
         label_name.set_coord(x + 300, y + 270, 580, 270);
         label_name.set_font(resrc.font_signage);
+        label_name.set_text_size(2);
         label_name.set_align(components::label_base::text_alignment::Center);
         label_name.set_bkcolor(resrc.grayscale_16);
         label_name.set_text("名前表示");

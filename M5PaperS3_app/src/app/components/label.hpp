@@ -27,6 +27,7 @@ namespace app::components
         lgfx::rgb565_t bkcolor;
         std::optional<lgfx::rgb565_t> border_color;
         std::optional<int32_t> round;
+        std::optional<float> text_size;
         text_alignment text_align;
 
         // label表示サイズ
@@ -56,7 +57,7 @@ namespace app::components
               underline(false),
               bkcolor(0xFFFF),
               border_color(),
-              round(),
+              round(), text_size(),
               text_align(text_alignment::Center),
               x(0), y(0), w(0), h(0),
               text_underline_h(1)
@@ -81,6 +82,11 @@ namespace app::components
         void set_text(char const *text_)
         {
             text = text_;
+            update();
+        }
+        void set_text_size(float size)
+        {
+            text_size = size;
             update();
         }
         void set_font(font_info const &font_)
@@ -112,6 +118,12 @@ namespace app::components
                 return;
             }
 
+            auto text_h = font->metrics.height;
+            if (text_size)
+            {
+                M5.Display.setTextSize(*text_size);
+                text_h = (uint16_t)(text_h * (*text_size));
+            }
             M5.Display.setFont(font->get());
             auto text_w = M5.Display.textWidth(text);
 
@@ -128,12 +140,12 @@ namespace app::components
                 break;
             }
             // text_offset_y = (h - font->metrics.height - text_underline_h - (text_underline_offset_y - 1)) / 2;
-            text_offset_y = (h - font->metrics.height) / 2;
+            text_offset_y = (h - text_h) / 2;
             //
             text_x = x + text_offset_x;
             text_y = y + text_offset_y;
             text_underline_x = text_x;
-            text_underline_y = text_y + font->metrics.height + text_underline_offset_y;
+            text_underline_y = text_y + text_h + text_underline_offset_y;
             text_underline_w = text_w;
         }
 
@@ -147,10 +159,16 @@ namespace app::components
             // startWrite()/endWrite()は上位で実行する
             // M5.Display.startWrite();
             M5.Display.setFont(font->get());
-            M5.Display.setTextSize(1);
             M5.Display.setTextColor(TFT_BLACK);
             M5.Display.setTextWrap(false);
-
+            if (text_size)
+            {
+                M5.Display.setTextSize(*text_size);
+            }
+            else
+            {
+                M5.Display.setTextSize(1);
+            }
             // 描画領域を塗りつぶし
             if (round)
             {
