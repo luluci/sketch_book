@@ -41,7 +41,7 @@ namespace app::components
         using label_base::set_text;
         using label_base::set_underline;
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             label_base::render();
         }

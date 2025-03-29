@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <cstdint>
 
 namespace lib_mini_appfx
 {
@@ -19,9 +20,10 @@ namespace lib_mini_appfx
         int y2; // 終点:Y座標
 
         bool has_hit;
+        bool has_update;
 
     public:
-        component(id_type id_) : id(id_), has_hit(true) {}
+        component(id_type id_) : id(id_), has_hit(true), has_update(false) {}
 
         void set_coord(int x_, int y_, int w_, int h_)
         {
@@ -57,6 +59,6 @@ namespace lib_mini_appfx
             }
         }
 
-        virtual void render() = 0;
+        virtual void render(uint32_t data) = 0;
     };
 }

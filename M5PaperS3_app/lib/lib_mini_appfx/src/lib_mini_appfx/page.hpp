@@ -160,7 +160,11 @@ namespace lib_mini_appfx
             for (int i = 0; i < components.size(); i++)
             {
                 auto &comp = components[i];
-                comp->render();
+                if (init || comp->has_update)
+                {
+                    comp->render(data);
+                    comp->has_update = false;
+                }
             }
 
             end_render(data);

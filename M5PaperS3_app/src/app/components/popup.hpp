@@ -26,7 +26,7 @@ namespace app::components
 
         popup(id_type id_) : base_type::component(id_) {}
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             // 描画領域を塗りつぶし
             M5.Display.fillRect(x, y, w, h, TFT_WHITE);

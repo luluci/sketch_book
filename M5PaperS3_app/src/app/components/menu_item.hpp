@@ -71,7 +71,7 @@ namespace app::components
             underline_w = text_w;
         }
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             if (font == nullptr || text == nullptr)
             {

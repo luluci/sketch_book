@@ -47,7 +47,7 @@ namespace app::components
             bkcolor = color;
         }
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             clear();
         }

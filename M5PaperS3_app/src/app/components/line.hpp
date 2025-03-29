@@ -23,7 +23,7 @@ namespace app::components
 
         line(id_type id_) : base_type::component(id_) {}
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             // 下線を引く
             // M5.Display.drawFastHLine(x, y2, w);

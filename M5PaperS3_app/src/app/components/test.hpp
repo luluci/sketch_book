@@ -34,7 +34,7 @@ namespace app::components
             bkcolor = color;
         }
 
-        virtual void render() override
+        virtual void render(uint32_t data) override
         {
             M5.Display.setFont(resrc.font_menu.get());
             M5.Display.setTextSize(1);
