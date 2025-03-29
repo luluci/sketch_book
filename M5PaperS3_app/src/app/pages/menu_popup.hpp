@@ -19,6 +19,7 @@ namespace app::pages
         MenuBLE,
         MenuTestEPDiy,
         MenuDrawCanvas,
+        MenuDynamicSignage,
     };
 
     //
@@ -36,6 +37,7 @@ namespace app::pages
         components::menu_item<component_id> menu_ble;
         components::menu_item<component_id> menu_test_epdiy;
         components::menu_item<component_id> menu_draw_canvas;
+        components::menu_item<component_id> menu_dynamic_signage;
 
         using base_type::h;
         using base_type::w;

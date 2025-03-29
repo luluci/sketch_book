@@ -12,7 +12,8 @@ namespace app::pages
           menu_settings(component_id::MenuSettings),
           menu_ble(component_id::MenuBLE),
           menu_test_epdiy(component_id::MenuTestEPDiy),
-          menu_draw_canvas(component_id::MenuDrawCanvas)
+          menu_draw_canvas(component_id::MenuDrawCanvas),
+          menu_dynamic_signage(component_id::MenuDynamicSignage)
     {
         // ポップアップ領域
         set_coord(0, 80, 440, 700);
@@ -52,6 +53,12 @@ namespace app::pages
         menu_draw_canvas.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
         menu_draw_canvas.set_text("Draw Canvas");
         menu_draw_canvas.set_font(resrc.font_menu);
+        menu_count++;
+        // 動的サイネージapp
+        add(menu_dynamic_signage);
+        menu_dynamic_signage.set_coord(x + padding, y + padding + (menu_item_h * menu_count), w - (padding * 2), menu_item_h);
+        menu_dynamic_signage.set_text("Signage");
+        menu_dynamic_signage.set_font(resrc.font_menu);
         menu_count++;
     }
     bool menu_popup::check_polling()
