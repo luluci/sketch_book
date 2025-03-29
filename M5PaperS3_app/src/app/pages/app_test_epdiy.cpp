@@ -12,7 +12,7 @@ namespace app::pages
           prev_button(component_id::PrevButton),
           next_button(component_id::NextButton)
     {
-        // 表示領域
+        // app領域
         set_coord(0, 80, 540, 880);
 
         // テスト表示パネル

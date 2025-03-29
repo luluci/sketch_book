@@ -16,7 +16,7 @@ namespace app::pages
           ble_server_stop(component_id::BLEServerStop),
           ble_connect_status(component_id::BLEConnectStatus)
     {
-        // ポップアップ領域
+        // app領域
         set_coord(0, 80, 540, 880);
 
         //

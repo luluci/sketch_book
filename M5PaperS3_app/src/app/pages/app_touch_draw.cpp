@@ -8,7 +8,7 @@ namespace app::pages
     app_touch_draw::app_touch_draw(id_type id_)
         : base_type::page(id_), canvas(component_id::Canvas), clear_button(component_id::ClearButton)
     {
-        // ポップアップ領域
+        // app領域
         set_coord(0, 80, 540, 880);
 
         // canvas

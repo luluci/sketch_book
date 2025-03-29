@@ -154,12 +154,18 @@ namespace lib_mini_appfx
 
         virtual void render(bool init, uint32_t data) override
         {
+            begin_render(data);
+
             // 描画は0開始で上書きしていく
             for (int i = 0; i < components.size(); i++)
             {
                 auto &comp = components[i];
                 comp->render();
             }
+
+            end_render(data);
         }
+        virtual void begin_render(uint32_t) {}
+        virtual void end_render(uint32_t) {}
     };
 }

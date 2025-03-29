@@ -7,7 +7,7 @@ namespace app::pages
 {
     app_main::app_main(id_type id_) : base_type::page(id_), panel(component_id::Panel)
     {
-        // ポップアップ領域
+        // app領域
         set_coord(0, 80, 540, 880);
 
         //
