@@ -92,11 +92,11 @@ namespace app
         return false;
     }
 
-    void app::render_begin()
+    void app::begin_render()
     {
         M5.Display.startWrite();
     }
-    void app::render_end()
+    void app::end_render()
     {
         M5.Display.endWrite();
     }

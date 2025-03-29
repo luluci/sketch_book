@@ -50,8 +50,8 @@ namespace app
         bool check_event();
         bool check_event_touch();
 
-        virtual void render_begin() override;
-        virtual void render_end() override;
+        virtual void begin_render() override;
+        virtual void end_render() override;
         // 表示app変更通知
         virtual void on_change_app(id_type new_app) override;
     };

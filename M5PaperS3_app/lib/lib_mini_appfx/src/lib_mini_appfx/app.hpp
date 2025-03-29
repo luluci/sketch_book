@@ -120,7 +120,7 @@ namespace lib_mini_appfx
         }
         void refresh()
         {
-            render_begin();
+            begin_render();
             if (app_page != nullptr)
             {
                 app_page->render(true, 0);
@@ -129,7 +129,7 @@ namespace lib_mini_appfx
             {
                 menu_page->render(true, 0);
             }
-            render_end();
+            end_render();
         }
 
         // ページタッチ判定
@@ -157,7 +157,10 @@ namespace lib_mini_appfx
             {
                 if (page->check_touch_pressed(x_, y_))
                 {
+                    // リクエストを実行する
                     exec_request();
+                    // イベントハンドラでは、イベント受理時にpage更新をチェックする
+                    page->render(false, 0);
                     return true;
                 }
             }
@@ -189,7 +192,10 @@ namespace lib_mini_appfx
             {
                 if (page->check_touch_dragging(x_, y_, delta_x_, delta_y_))
                 {
+                    // リクエストを実行する
                     exec_request();
+                    // イベントハンドラでは、イベント受理時にpage更新をチェックする
+                    page->render(false, 0);
                     return true;
                 }
             }
@@ -221,7 +227,10 @@ namespace lib_mini_appfx
             {
                 if (page->check_touch_released(x_, y_))
                 {
+                    // リクエストを実行する
                     exec_request();
+                    // イベントハンドラでは、イベント受理時にpage更新をチェックする
+                    page->render(false, 0);
                     return true;
                 }
             }
@@ -230,10 +239,20 @@ namespace lib_mini_appfx
 
         void polling()
         {
+            // 全ページに対してポーリング処理を適用する
             for (size_t i = 0; i < pages.size(); i++)
             {
                 auto &page = pages[i];
                 check_polling(page);
+            }
+            // 表示中のpageに対して更新チェックを実施する
+            if (app_page != nullptr)
+            {
+                app_page->render(false, 0);
+            }
+            if (menu_page != nullptr)
+            {
+                menu_page->render(false, 0);
             }
         }
         void check_polling(page_type *page)
@@ -242,6 +261,7 @@ namespace lib_mini_appfx
             {
                 if (page->check_polling())
                 {
+                    // ポーリングによりリクエストが発生したら処理する
                     exec_request();
                 }
             }
@@ -253,7 +273,7 @@ namespace lib_mini_appfx
             {
                 has_app_change_ = false;
 
-                render_begin();
+                begin_render();
                 // pageからのリクエストを実行
                 for (auto &req : request_queue)
                 {
@@ -264,7 +284,7 @@ namespace lib_mini_appfx
                 {
                     on_change_app(app_page->id);
                 }
-                render_end();
+                end_render();
                 request_queue.clear();
             }
         }
@@ -321,7 +341,7 @@ namespace lib_mini_appfx
                 }
                 break;
             case event::AppUpdate:
-                app_page->render(false, req.data);
+                app_page->render(true, req.data);
                 break;
 
             default:
@@ -341,8 +361,8 @@ namespace lib_mini_appfx
             return nullptr;
         }
 
-        virtual void render_begin() = 0;
-        virtual void render_end() = 0;
+        virtual void begin_render() {}
+        virtual void end_render() {}
         // 表示app変更通知
         virtual void on_change_app(id_type new_app) = 0;
     };
