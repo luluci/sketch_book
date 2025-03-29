@@ -91,6 +91,13 @@ namespace app::pages
             req_change(page_id::AppDrawCanvas, 0);
             return true;
         }
+        if (component->id == menu_dynamic_signage.id)
+        {
+            // appとしてを表示する
+            req_close_popup(0);
+            req_change(page_id::AppSignage, 0);
+            return true;
+        }
 
         return false;
     }

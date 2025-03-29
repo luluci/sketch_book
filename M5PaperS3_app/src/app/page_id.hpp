@@ -15,6 +15,7 @@ namespace app
         AppTestEPDiy,    // EPDiyテスト
         AppDrawCanvas,   //
         AppBLE,          // BLE管理
+        AppSignage,      // 動的サイネージ
 
         MAX
     };

@@ -12,7 +12,8 @@ namespace app
                  app_test_epdiy(page_id::AppTestEPDiy),
                  app_touch_draw(page_id::AppDrawCanvas),
                  app_ble(page_id::AppBLE),
-                 app::base_type(menu_header, menu_popup, app_main, app_power_manager, app_test_epdiy, app_touch_draw, app_ble)
+                 app_dynamic_signage(page_id::AppSignage),
+                 app::base_type(menu_header, menu_popup, app_main, app_power_manager, app_test_epdiy, app_touch_draw, app_ble, app_dynamic_signage)
     {
     }
 
@@ -37,8 +38,10 @@ namespace app
         else
         {
             // イベント無し周期処理
-            base_type::polling();
+            // base_type::polling();
         }
+        // 周期処理, イベント有無に関わらず実行する
+        base_type::polling();
 
         // 処理時間を差し引いた時間をwaitして周期時間を可能な範囲で守る
         int64_t proced_time_ms = (esp_timer_get_time() - time_us) / 1000ULL;

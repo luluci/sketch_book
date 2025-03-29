@@ -14,6 +14,7 @@
 #include "pages/app_test_epdiy.hpp"
 #include "pages/app_touch_draw.hpp"
 #include "pages/app_ble.hpp"
+#include "pages/app_dynamic_signage.hpp"
 
 namespace app
 {
@@ -35,6 +36,7 @@ namespace app
         pages::app_test_epdiy app_test_epdiy;
         pages::app_touch_draw app_touch_draw;
         pages::app_ble app_ble;
+        pages::app_dynamic_signage app_dynamic_signage;
 
     public:
         using base_type = lib_mini_appfx::app<page_id>;
